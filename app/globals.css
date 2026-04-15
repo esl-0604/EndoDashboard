@@ -11,7 +11,7 @@
   --border: rgba(10, 35, 70, 0.08);
   --radius: 18px;
   --shadow: 0 10px 30px rgba(10, 35, 70, 0.08);
-  --rail-w: 540px;
+  --rail-w: 640px;
   --gap: 22px;
 }
 
@@ -99,11 +99,11 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   left: 0;
   right: calc(var(--rail-w) + var(--gap));
   transition: opacity 0.4s ease, right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
   background: #0b2545;
-  box-shadow: 0 8px 24px rgba(10, 35, 70, 0.1);
-  opacity: 0.92;
+  box-shadow: 0 6px 18px rgba(10, 35, 70, 0.08);
+  opacity: 0.82;
   z-index: 1;
 }
 
@@ -141,18 +141,20 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   z-index: -1;
 }
 .showcase:not(.detail) .product-rail {
-  animation: railAttract 2.6s ease-in-out infinite;
+  animation: railAttract 2.4s ease-in-out infinite;
 }
 @keyframes railAttract {
   0%, 100% {
     box-shadow:
-      0 30px 70px rgba(2, 132, 199, 0.22),
-      0 0 0 2px rgba(2, 132, 199, 0.12);
+      0 40px 90px rgba(2, 132, 199, 0.3),
+      0 0 0 3px rgba(2, 132, 199, 0.18);
+    transform: scale(1);
   }
   50% {
     box-shadow:
-      0 36px 90px rgba(2, 132, 199, 0.4),
-      0 0 0 4px rgba(2, 132, 199, 0.25);
+      0 48px 120px rgba(2, 132, 199, 0.5),
+      0 0 0 6px rgba(2, 132, 199, 0.28);
+    transform: scale(1.008);
   }
 }
 
@@ -258,17 +260,21 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 
 /* ---------- Product rail ---------- */
 .rail-header {
-  padding: 34px 32px 26px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(2,132,199,0.14) 0%, rgba(99,102,241,0.1) 100%);
+  padding: 40px 36px 36px;
+  border-bottom: none;
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(255,255,255,0.22) 0%, transparent 55%),
+    linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
   position: relative;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.35);
 }
-.rail-header::before {
+.rail-header::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, var(--accent), #6366f1);
+  left: 36px; right: 36px; bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
 }
 .rail-back {
   width: 100%;
@@ -276,48 +282,51 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   background: var(--panel-2);
 }
 .rail-eyebrow {
-  font-size: 13px; font-weight: 800; letter-spacing: 3px;
-  color: var(--accent);
-  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 800; letter-spacing: 3.5px;
+  color: #fff;
+  opacity: 0.92;
+  display: flex; align-items: center; gap: 12px;
 }
 .rail-eyebrow::before {
   content: "";
-  width: 10px; height: 10px;
+  width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(2,132,199,0.5);
-  animation: dotPulse 1.8s ease-out infinite;
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
+  animation: dotPulse 1.6s ease-out infinite;
 }
 @keyframes dotPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(2,132,199,0.6); }
-  70%  { box-shadow: 0 0 0 12px rgba(2,132,199,0); }
-  100% { box-shadow: 0 0 0 0 rgba(2,132,199,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.8); }
+  70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
 }
 .rail-title {
-  font-size: 28px; font-weight: 800;
-  color: var(--text); margin-top: 12px;
-  letter-spacing: -0.6px;
-  line-height: 1.25;
+  font-size: 38px; font-weight: 900;
+  color: #fff;
+  margin-top: 14px;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  text-shadow: 0 2px 14px rgba(0,0,0,0.18);
 }
 .rail-list {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px;
-  display: flex; flex-direction: column; gap: 16px;
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 18px;
 }
 .rail-tile {
-  display: flex; align-items: center; gap: 20px;
-  padding: 20px;
+  display: flex; align-items: center; gap: 22px;
+  padding: 22px 26px;
   background: var(--panel);
   border: 2px solid var(--border);
-  border-radius: 18px;
+  border-radius: 20px;
   text-align: left;
-  min-height: 140px;
+  min-height: 160px;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 6px 18px rgba(10, 35, 70, 0.08);
+  box-shadow: 0 8px 22px rgba(10, 35, 70, 0.1);
 }
 .rail-tile::after {
   content: "";
@@ -331,11 +340,14 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .rail-tile:hover {
   border-color: var(--accent);
   background: var(--panel-2);
-  transform: translateX(-4px);
-  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.18);
+  transform: translateX(-6px);
+  box-shadow: 0 14px 34px rgba(2, 132, 199, 0.25);
 }
 .rail-tile:hover::after { opacity: 1; }
-.rail-tile:hover .rail-arrow { color: var(--accent); transform: translateX(4px); }
+.rail-tile:hover .rail-arrow {
+  transform: translateX(4px) scale(1.08);
+  box-shadow: 0 10px 22px rgba(2, 132, 199, 0.5);
+}
 .rail-tile:active { transform: scale(0.98); }
 .rail-tile.selected {
   border-color: var(--accent);
@@ -346,32 +358,37 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .rail-tile.selected .rail-name { color: var(--accent); }
 .rail-tile.selected .rail-arrow { color: var(--accent); }
 .rail-thumb {
-  width: 110px; height: 110px;
+  width: 130px; height: 130px;
   flex-shrink: 0;
-  border-radius: 14px; min-height: 0;
+  border-radius: 16px; min-height: 0;
 }
-.rail-thumb .ph-label { font-size: 11px; }
+.rail-thumb .ph-label { font-size: 12px; }
 .rail-info { flex: 1; min-width: 0; }
 .rail-cat {
-  font-size: 12px; font-weight: 800; letter-spacing: 1.2px;
+  font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
   color: var(--accent); text-transform: uppercase;
 }
 .rail-name {
-  font-size: 22px; font-weight: 800; color: var(--text);
-  margin: 6px 0 4px;
-  letter-spacing: -0.3px;
+  font-size: 26px; font-weight: 900; color: var(--text);
+  margin: 8px 0 6px;
+  letter-spacing: -0.5px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .rail-sub {
-  font-size: 14px; color: var(--text-dim);
+  font-size: 15px; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .rail-arrow {
-  color: var(--text-dim);
-  font-size: 32px;
+  color: #fff;
+  font-size: 26px;
   font-weight: 700;
   flex-shrink: 0;
-  transition: color 0.2s, transform 0.2s;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 /* ---------- Product detail panel ---------- */
