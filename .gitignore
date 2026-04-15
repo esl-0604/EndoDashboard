@@ -7,5 +7,6 @@ out/
 .claude/
 .vercel/
 memory/
+*.tsbuildinfo
 
 .vercel
