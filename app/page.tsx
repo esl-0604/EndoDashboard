@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PRODUCTS, SLIDES, TR, type Lang, type Product } from "@/lib/products";
+import { PRODUCTS, SLIDES, TR, type Lang, type Product, type VideoItem } from "@/lib/products";
 
 const SLIDE_DURATION = 7000;
 const IDLE_DELAY = 90_000;
@@ -11,6 +11,7 @@ export default function Home() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   const t = (k: string) => TR[lang][k] ?? k;
   const product: Product | undefined = PRODUCTS.find((p) => p.id === selectedId);
@@ -182,15 +183,18 @@ export default function Home() {
                 <section>
                   <h3 className="panel-h3">{t("panel.videos")}</h3>
                   <div className="related-videos">
-                    <div className="placeholder-media video-thumb">
-                      <span className="ph-label">▶ [ Demo Video ]</span>
-                    </div>
-                    <div className="placeholder-media video-thumb">
-                      <span className="ph-label">▶ [ Procedure ]</span>
-                    </div>
-                    <div className="placeholder-media video-thumb">
-                      <span className="ph-label">▶ [ Surgeon Interview ]</span>
-                    </div>
+                    {product.videos.map((v) => (
+                      <button
+                        key={v.id}
+                        className="video-thumb-btn"
+                        onClick={() => setActiveVideo(v)}
+                      >
+                        <div className="placeholder-media video-thumb">
+                          <div className="play-icon">▶</div>
+                          <div className="video-label">{v.title}</div>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 </section>
 
@@ -228,6 +232,46 @@ export default function Home() {
           )}
         </section>
       </div>
+
+      {/* Video modal */}
+      {activeVideo && (
+        <div
+          className="video-modal"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setActiveVideo(null)}
+        >
+          <div className="video-modal-inner" onClick={(e) => e.stopPropagation()}>
+            <div className="video-modal-header">
+              <h3>{activeVideo.title}</h3>
+              <button
+                className="video-modal-close"
+                onClick={() => setActiveVideo(null)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="video-modal-body">
+              {activeVideo.src ? (
+                <video
+                  key={activeVideo.id}
+                  src={activeVideo.src}
+                  controls
+                  autoPlay
+                  className="video-player"
+                />
+              ) : (
+                <div className="placeholder-media video-player">
+                  <span className="ph-label">
+                    ▶ [ {activeVideo.title} — video file will load here ]
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

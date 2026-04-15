@@ -357,7 +357,106 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .related-videos {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
 }
-.video-thumb { min-height: 160px; }
+.video-thumb-btn {
+  padding: 0;
+  display: block;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.15s;
+}
+.video-thumb-btn:active { transform: scale(0.98); }
+.video-thumb {
+  position: relative;
+  min-height: 180px;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.video-thumb-btn:hover .video-thumb {
+  border-color: var(--accent);
+  background: #e9f1fa;
+}
+.play-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(2,132,199,0.9);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  padding-left: 4px;
+  box-shadow: 0 6px 16px rgba(2,132,199,0.35);
+  transition: transform 0.2s, background 0.2s;
+}
+.video-thumb-btn:hover .play-icon {
+  transform: scale(1.1);
+  background: var(--accent);
+}
+.video-label {
+  font-size: 13px; font-weight: 600;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+/* ---------- Video modal ---------- */
+.video-modal {
+  position: fixed; inset: 0;
+  z-index: 1000;
+  background: rgba(10, 35, 70, 0.72);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.video-modal-inner {
+  background: #000;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  animation: modalIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes modalIn {
+  from { transform: scale(0.92); opacity: 0 }
+  to   { transform: scale(1); opacity: 1 }
+}
+.video-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px;
+  background: #0b1220;
+  color: #fff;
+}
+.video-modal-header h3 {
+  margin: 0; font-size: 17px; font-weight: 700;
+}
+.video-modal-close {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.video-modal-close:hover { background: rgba(255,255,255,0.25); }
+.video-modal-body {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  background: #000;
+  min-height: 360px;
+}
+.video-player {
+  width: 100%;
+  max-height: 70vh;
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+  border: none;
+  background: #000;
+}
 
 .clinical-grid {
   display: grid; grid-template-columns: repeat(4, 1fr);

@@ -1,5 +1,7 @@
 export type Lang = "ko" | "en";
 
+export type VideoItem = { id: string; title: string; src: string };
+
 export type Product = {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export type Product = {
   desc: Record<Lang, string>;
   specs: { k: string; v: string }[];
   clinical: { cases: string; success: string; time: string; hospitals: string };
+  videos: VideoItem[];
 };
 
 export const PRODUCTS: Product[] = [
@@ -27,6 +30,11 @@ export const PRODUCTS: Product[] = [
       { k: "Setup Time", v: "< 5 min" },
     ],
     clinical: { cases: "120+", success: "98.5%", time: "-32%", hospitals: "15" },
+    videos: [
+      { id: "r1-demo", title: "Demo Video", src: "" },
+      { id: "r1-proc", title: "Live Procedure", src: "" },
+      { id: "r1-intv", title: "Surgeon Interview", src: "" },
+    ],
   },
   {
     id: 2,
@@ -44,6 +52,11 @@ export const PRODUCTS: Product[] = [
       { k: "Foot Pedals", v: "6-axis" },
     ],
     clinical: { cases: "80+", success: "97.2%", time: "-28%", hospitals: "12" },
+    videos: [
+      { id: "c2-demo", title: "Console Walkthrough", src: "" },
+      { id: "c2-ergo", title: "Ergonomics Test", src: "" },
+      { id: "c2-haptic", title: "Haptic Demo", src: "" },
+    ],
   },
   {
     id: 3,
@@ -61,6 +74,11 @@ export const PRODUCTS: Product[] = [
       { k: "Compatibility", v: "R1 / R2 platform" },
     ],
     clinical: { cases: "5,000+", success: "99.1%", time: "—", hospitals: "30+" },
+    videos: [
+      { id: "kit-unbox", title: "Unboxing & Setup", src: "" },
+      { id: "kit-usage", title: "Clinical Usage", src: "" },
+      { id: "kit-variants", title: "Tool Variants", src: "" },
+    ],
   },
   {
     id: 4,
@@ -78,6 +96,11 @@ export const PRODUCTS: Product[] = [
       { k: "Integration", v: "DICOM / HL7" },
     ],
     clinical: { cases: "2,300+", success: "—", time: "-18%", hospitals: "8" },
+    videos: [
+      { id: "ai-detect", title: "Lesion Detection Demo", src: "" },
+      { id: "ai-analysis", title: "Real-time Analysis", src: "" },
+      { id: "ai-integration", title: "System Integration", src: "" },
+    ],
   },
 ];
 
