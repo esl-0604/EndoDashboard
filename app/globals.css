@@ -316,13 +316,13 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   display: flex; flex-direction: column; gap: 18px;
 }
 .rail-tile {
-  display: flex; align-items: center; gap: 22px;
-  padding: 22px 26px;
+  display: flex; align-items: stretch; gap: 0;
+  padding: 0;
   background: var(--panel);
   border: 2px solid var(--border);
   border-radius: 20px;
   text-align: left;
-  min-height: 160px;
+  min-height: 180px;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -344,10 +344,6 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   box-shadow: 0 14px 34px rgba(2, 132, 199, 0.25);
 }
 .rail-tile:hover::after { opacity: 1; }
-.rail-tile:hover .rail-arrow {
-  transform: translateX(4px) scale(1.08);
-  box-shadow: 0 10px 22px rgba(2, 132, 199, 0.5);
-}
 .rail-tile:active { transform: scale(0.98); }
 .rail-tile.selected {
   border-color: var(--accent);
@@ -358,12 +354,20 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .rail-tile.selected .rail-name { color: var(--accent); }
 .rail-tile.selected .rail-arrow { color: var(--accent); }
 .rail-thumb {
-  width: 130px; height: 130px;
+  width: 220px;
+  align-self: stretch;
   flex-shrink: 0;
-  border-radius: 16px; min-height: 0;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid var(--border);
+  min-height: 0;
 }
 .rail-thumb .ph-label { font-size: 12px; }
-.rail-info { flex: 1; min-width: 0; }
+.rail-info {
+  flex: 1; min-width: 0;
+  padding: 22px 26px;
+  display: flex; flex-direction: column; justify-content: center;
+}
 .rail-cat {
   font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
   color: var(--accent); text-transform: uppercase;
@@ -377,18 +381,6 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .rail-sub {
   font-size: 15px; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rail-arrow {
-  color: #fff;
-  font-size: 26px;
-  font-weight: 700;
-  flex-shrink: 0;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #6366f1);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 /* ---------- Product detail panel ---------- */

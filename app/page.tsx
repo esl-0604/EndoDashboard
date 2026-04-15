@@ -144,7 +144,6 @@ export default function Home() {
                   <div className="rail-name">{p.name}</div>
                   <div className="rail-sub">{p.sub}</div>
                 </div>
-                <div className="rail-arrow">›</div>
               </button>
             ))}
           </div>
