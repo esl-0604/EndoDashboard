@@ -17,7 +17,8 @@ export default function LayoutThree({
 
   const handleSelectProduct = (i: number) => {
     setSelectedIdx(i);
-    setPlayingVideo(null);
+    // Auto-pick first related video as the currently playing one
+    setPlayingVideo(PRODUCTS[i].videos[0] ?? null);
   };
   const handleClose = () => {
     setSelectedIdx(null);
@@ -152,22 +153,35 @@ export default function LayoutThree({
 
               <div className="quad-section-title">{t("panel.videos")}</div>
               <div className="quad-videos">
-                {selected.videos.map((v) => (
-                  <button
-                    key={v.id}
-                    className={`video-thumb-btn ${
-                      playingVideo?.id === v.id ? "playing" : ""
-                    }`}
-                    onClick={() => setPlayingVideo(v)}
-                  >
-                    <div className="placeholder-media video-thumb">
-                      <div className="play-icon">
-                        {playingVideo?.id === v.id ? "❚❚" : "▶"}
+                {selected.videos.map((v) => {
+                  const isPlaying = playingVideo?.id === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      className={`video-thumb-btn ${isPlaying ? "playing" : ""}`}
+                      onClick={() => setPlayingVideo(v)}
+                    >
+                      <div className="placeholder-media video-thumb">
+                        {isPlaying && (
+                          <div className="now-playing-badge">
+                            <span className="np-dot" />
+                            {lang === "ko" ? "재생 중" : "NOW PLAYING"}
+                          </div>
+                        )}
+                        <div className="play-icon">
+                          {isPlaying ? (
+                            <span className="eq-bars" aria-hidden>
+                              <span /><span /><span /><span />
+                            </span>
+                          ) : (
+                            "▶"
+                          )}
+                        </div>
+                        <div className="video-label">{v.title}</div>
                       </div>
-                      <div className="video-label">{v.title}</div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </>
