@@ -9,7 +9,7 @@ import LayoutThree from "@/components/LayoutThree";
 const IDLE_DELAY = 90_000;
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("ko");
+  const lang: Lang = "en";
   const [layout, setLayout] = useState<1 | 2 | 3>(1);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
@@ -60,22 +60,6 @@ export default function Home() {
             Option 3
           </button>
         </div>
-      </div>
-
-      {/* Language toggle (top-right) */}
-      <div className="lang-toggle">
-        <button
-          className={`lang-btn ${lang === "ko" ? "active" : ""}`}
-          onClick={() => setLang("ko")}
-        >
-          KO
-        </button>
-        <button
-          className={`lang-btn ${lang === "en" ? "active" : ""}`}
-          onClick={() => setLang("en")}
-        >
-          EN
-        </button>
       </div>
 
       {layout === 1 && <LayoutOne lang={lang} onVideoClick={setActiveVideo} />}
