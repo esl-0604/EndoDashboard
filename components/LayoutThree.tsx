@@ -25,35 +25,51 @@ export default function LayoutThree({
     setPlayingVideo(null);
   };
 
+  // Gap between cells (px)
+  const GAP = 16;
+  const half = GAP / 2;
+
   // Compute position styles for each cell
   const cellStyle = (i: number): React.CSSProperties => {
     if (selectedIdx === null) {
       const col = i % 2;
       const row = Math.floor(i / 2);
       return {
-        top: `${row * 50}%`,
-        left: `${col * 50}%`,
-        width: "50%",
-        height: "50%",
+        top: row === 0 ? "0" : `calc(50% + ${half}px)`,
+        left: col === 0 ? "0" : `calc(50% + ${half}px)`,
+        width: `calc(50% - ${half}px)`,
+        height: `calc(50% - ${half}px)`,
       };
     }
     if (i === selectedIdx) {
-      return { top: "0", left: "0", width: "60%", height: "74%" };
+      return {
+        top: "0",
+        left: "0",
+        width: `calc(60% - ${half}px)`,
+        height: `calc(74% - ${half}px)`,
+      };
     }
-    // Bottom strip: order = position among non-selected
+    // Bottom strip: 3 cells with gaps between
     const order = [0, 1, 2, 3].filter((x) => x !== selectedIdx).indexOf(i);
+    const cellW = `((100% - ${2 * GAP}px) / 3)`;
     return {
-      top: "76%",
-      left: `${order * 33.5}%`,
-      width: "32.5%",
-      height: "24%",
+      top: `calc(74% + ${half}px)`,
+      left: `calc(${order} * (${cellW} + ${GAP}px))`,
+      width: `calc(${cellW})`,
+      height: `calc(26% - ${half}px)`,
     };
   };
 
   const detailStyle: React.CSSProperties =
     selectedIdx === null
       ? { top: "0", left: "100%", width: "0%", height: "74%", opacity: 0 }
-      : { top: "0", left: "61%", width: "39%", height: "74%", opacity: 1 };
+      : {
+          top: "0",
+          left: `calc(60% + ${half}px)`,
+          width: `calc(40% - ${half}px)`,
+          height: `calc(74% - ${half}px)`,
+          opacity: 1,
+        };
 
   return (
     <div className={`quad ${selectedIdx !== null ? "active" : ""}`}>
