@@ -48,7 +48,7 @@ export default function Home() {
           </button>
           <button
             className={`layout-btn ${layout === 2 ? "active" : ""}`}
-            onClick={() => setLayout(3)}
+            onClick={() => setLayout(2)}
           >
             Option 2
           </button>
