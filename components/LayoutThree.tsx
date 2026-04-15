@@ -5,15 +5,24 @@ import { PRODUCTS, TR, type Lang, type VideoItem } from "@/lib/products";
 
 export default function LayoutThree({
   lang,
-  onVideoClick,
 }: {
   lang: Lang;
-  onVideoClick: (v: VideoItem) => void;
+  onVideoClick?: (v: VideoItem) => void;
 }) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [playingVideo, setPlayingVideo] = useState<VideoItem | null>(null);
 
   const t = (k: string) => TR[lang][k] ?? k;
   const selected = selectedIdx !== null ? PRODUCTS[selectedIdx] : null;
+
+  const handleSelectProduct = (i: number) => {
+    setSelectedIdx(i);
+    setPlayingVideo(null);
+  };
+  const handleClose = () => {
+    setSelectedIdx(null);
+    setPlayingVideo(null);
+  };
 
   // Compute position styles for each cell
   const cellStyle = (i: number): React.CSSProperties => {
@@ -54,11 +63,30 @@ export default function LayoutThree({
             selectedIdx !== null && selectedIdx !== i ? "minor" : ""
           }`}
           style={cellStyle(i)}
-          onClick={() => setSelectedIdx(i)}
+          onClick={() => handleSelectProduct(i)}
         >
-          <div className="quad-media placeholder-media">
-            <span className="ph-label">▶ [ {p.name} — Video Loop ]</span>
-          </div>
+          {selectedIdx === i && playingVideo ? (
+            playingVideo.src ? (
+              <video
+                key={playingVideo.id}
+                src={playingVideo.src}
+                autoPlay
+                controls
+                className="quad-media-video"
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <div className="quad-media placeholder-media quad-media-playing">
+                <span className="ph-label">
+                  ▶ Playing: {playingVideo.title}
+                </span>
+              </div>
+            )
+          ) : (
+            <div className="quad-media placeholder-media">
+              <span className="ph-label">▶ [ {p.name} — Video Loop ]</span>
+            </div>
+          )}
           <div className="quad-label">
             <div className="quad-cat">{p.category}</div>
             <div className="quad-name">{p.name}</div>
@@ -82,7 +110,7 @@ export default function LayoutThree({
               </div>
               <button
                 className="quad-back"
-                onClick={() => setSelectedIdx(null)}
+                onClick={handleClose}
                 aria-label="Back to grid"
               >
                 ✕
@@ -127,11 +155,15 @@ export default function LayoutThree({
                 {selected.videos.map((v) => (
                   <button
                     key={v.id}
-                    className="video-thumb-btn"
-                    onClick={() => onVideoClick(v)}
+                    className={`video-thumb-btn ${
+                      playingVideo?.id === v.id ? "playing" : ""
+                    }`}
+                    onClick={() => setPlayingVideo(v)}
                   >
                     <div className="placeholder-media video-thumb">
-                      <div className="play-icon">▶</div>
+                      <div className="play-icon">
+                        {playingVideo?.id === v.id ? "❚❚" : "▶"}
+                      </div>
                       <div className="video-label">{v.title}</div>
                     </div>
                   </button>

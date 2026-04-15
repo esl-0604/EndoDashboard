@@ -1011,3 +1011,31 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .quad-videos .video-thumb { min-height: 100px; }
 .quad-videos .play-icon { width: 40px; height: 40px; font-size: 16px; }
 .quad-videos .video-label { font-size: 11px; }
+.quad-videos .video-thumb-btn.playing .video-thumb {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(2,132,199,0.14), rgba(99,102,241,0.1));
+  box-shadow: 0 0 0 2px rgba(2,132,199,0.35);
+}
+.quad-videos .video-thumb-btn.playing .play-icon {
+  background: var(--accent);
+  animation: playPulse 1.4s ease-in-out infinite;
+}
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(2,132,199,0.5); }
+  50%      { box-shadow: 0 0 0 10px rgba(2,132,199,0); }
+}
+
+.quad-media-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+  z-index: 5;
+}
+.quad-media-playing {
+  background:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px),
+    linear-gradient(135deg, #082345 0%, #0284c7 100%);
+}
