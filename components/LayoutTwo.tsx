@@ -5,145 +5,204 @@ import { PRODUCTS, TR, type Lang, type VideoItem } from "@/lib/products";
 
 export default function LayoutTwo({
   lang,
-  onVideoClick,
 }: {
   lang: Lang;
-  onVideoClick: (v: VideoItem) => void;
+  onVideoClick?: (v: VideoItem) => void;
 }) {
-  const [featuredId, setFeaturedId] = useState<number>(PRODUCTS[0].id);
-  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [playingVideo, setPlayingVideo] = useState<VideoItem | null>(null);
 
   const t = (k: string) => TR[lang][k] ?? k;
-  const featured = PRODUCTS.find((p) => p.id === featuredId)!;
+  const selected = selectedIdx !== null ? PRODUCTS[selectedIdx] : null;
+
+  const handleSelectProduct = (i: number) => {
+    setSelectedIdx(i);
+    // Auto-pick first related video as the currently playing one
+    setPlayingVideo(PRODUCTS[i].videos[0] ?? null);
+  };
+  const handleClose = () => {
+    setSelectedIdx(null);
+    setPlayingVideo(null);
+  };
+
+  // Gap between cells (px)
+  const GAP = 16;
+  const half = GAP / 2;
+
+  // Compute position styles for each cell
+  const cellStyle = (i: number): React.CSSProperties => {
+    if (selectedIdx === null) {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      return {
+        top: row === 0 ? "0" : `calc(50% + ${half}px)`,
+        left: col === 0 ? "0" : `calc(50% + ${half}px)`,
+        width: `calc(50% - ${half}px)`,
+        height: `calc(50% - ${half}px)`,
+      };
+    }
+    if (i === selectedIdx) {
+      return {
+        top: "0",
+        left: "0",
+        width: `calc(60% - ${half}px)`,
+        height: `calc(74% - ${half}px)`,
+      };
+    }
+    // Bottom strip: 3 cells with gaps between
+    const order = [0, 1, 2, 3].filter((x) => x !== selectedIdx).indexOf(i);
+    const cellW = `((100% - ${2 * GAP}px) / 3)`;
+    return {
+      top: `calc(74% + ${half}px)`,
+      left: `calc(${order} * (${cellW} + ${GAP}px))`,
+      width: `calc(${cellW})`,
+      height: `calc(26% - ${half}px)`,
+    };
+  };
+
+  const detailStyle: React.CSSProperties =
+    selectedIdx === null
+      ? { top: "0", left: "100%", width: "0%", height: "74%", opacity: 0 }
+      : {
+          top: "0",
+          left: `calc(60% + ${half}px)`,
+          width: `calc(40% - ${half}px)`,
+          height: `calc(74% - ${half}px)`,
+          opacity: 1,
+        };
 
   return (
-    <div className="spotlight">
-      {/* Top: featured product spotlight */}
-      <div className="spotlight-hero">
-        <div className="spotlight-media placeholder-media" key={featured.id}>
-          <span className="ph-label">[ {featured.name} — Hero Image / Video ]</span>
-          <div className="badges spotlight-badges">
-            <span className="badge">● FDA Cleared</span>
-            <span className="badge">● CE Marked</span>
-            <span className="badge">● KFDA</span>
+    <div className={`quad ${selectedIdx !== null ? "active" : ""}`}>
+      {PRODUCTS.map((p, i) => (
+        <button
+          key={p.id}
+          className={`quad-cell ${selectedIdx === i ? "selected" : ""} ${
+            selectedIdx !== null && selectedIdx !== i ? "minor" : ""
+          }`}
+          style={cellStyle(i)}
+          onClick={() => handleSelectProduct(i)}
+        >
+          {selectedIdx === i && playingVideo ? (
+            playingVideo.src ? (
+              <video
+                key={playingVideo.id}
+                src={playingVideo.src}
+                autoPlay
+                controls
+                className="quad-media-video"
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <div className="quad-media placeholder-media quad-media-playing">
+                <span className="ph-label">
+                  ▶ Playing: {playingVideo.title}
+                </span>
+              </div>
+            )
+          ) : (
+            <div className="quad-media placeholder-media">
+              <span className="ph-label">▶ [ {p.name} — Video Loop ]</span>
+            </div>
+          )}
+          <div className="quad-label">
+            <div className="quad-cat">{p.category}</div>
+            <div className="quad-name">{p.name}</div>
           </div>
-        </div>
-        <div className="spotlight-info" key={`info-${featured.id}`}>
-          <div className="spotlight-cat">{featured.category}</div>
-          <h1 className="spotlight-name">{featured.name}</h1>
-          <div className="spotlight-sub">{featured.sub}</div>
-          <p className="spotlight-desc">{featured.desc[lang]}</p>
-          <div className="spotlight-specs">
-            {featured.specs.map((s) => (
-              <div key={s.k} className="spotlight-spec">
-                <div className="spotlight-spec-val">{s.v}</div>
-                <div className="spotlight-spec-key">{s.k}</div>
-              </div>
-            ))}
-          </div>
-          <button className="spotlight-cta" onClick={() => setDetailOpen(true)}>
-            {lang === "ko" ? "상세 정보 보기" : "View Full Details"} <span>→</span>
-          </button>
-        </div>
-      </div>
+          {selectedIdx === null && (
+            <div className="quad-hint">
+              {lang === "ko" ? "터치" : "TAP"}
+            </div>
+          )}
+        </button>
+      ))}
 
-      {/* Bottom: product strip */}
-      <div className="spotlight-strip">
-        <div className="strip-header">
-          <div className="strip-eyebrow">{t("rail.eyebrow")}</div>
-          <div className="strip-hint">{lang === "ko" ? "제품을 터치하여 전환" : "Tap to switch product"}</div>
-        </div>
-        <div className="strip-list">
-          {PRODUCTS.map((p) => (
-            <button
-              key={p.id}
-              className={`strip-card ${featuredId === p.id ? "active" : ""}`}
-              onClick={() => {
-                setFeaturedId(p.id);
-                setDetailOpen(false);
-              }}
-            >
-              <div className="strip-thumb placeholder-media">
-                <span className="ph-label">[ {p.name} ]</span>
-              </div>
-              <div className="strip-info">
-                <div className="strip-cat">{p.category}</div>
-                <div className="strip-name">{p.name}</div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Detail overlay */}
-      {detailOpen && (
-        <div className="detail-overlay" role="dialog" aria-modal="true">
-          <div className="detail-overlay-inner">
-            <div className="detail-overlay-header">
+      {/* Detail panel appears on right when selected */}
+      <div className="quad-detail" style={detailStyle} aria-hidden={selected === null}>
+        {selected && (
+          <>
+            <div className="quad-detail-header">
               <div>
-                <div className="panel-cat">{featured.category}</div>
-                <h2 className="panel-title">{featured.name}</h2>
+                <div className="panel-cat">{selected.category}</div>
+                <h2 className="panel-title">{selected.name}</h2>
               </div>
               <button
-                className="detail-overlay-close"
-                onClick={() => setDetailOpen(false)}
-                aria-label="Close"
+                className="quad-back"
+                onClick={handleClose}
+                aria-label="Back to grid"
               >
                 ✕
               </button>
             </div>
-            <div className="detail-overlay-body">
-              <section>
-                <h3 className="panel-h3">{t("panel.videos")}</h3>
-                <div className="related-videos">
-                  {featured.videos.map((v) => (
+
+            <div className="quad-detail-body">
+              <p className="quad-desc">{selected.desc[lang]}</p>
+
+              <div className="quad-section-title">{t("panel.specs")}</div>
+              <div className="quad-specs">
+                {selected.specs.map((s) => (
+                  <div key={s.k} className="quad-spec">
+                    <div className="quad-spec-val">{s.v}</div>
+                    <div className="quad-spec-key">{s.k}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="quad-section-title">{t("panel.clinical")}</div>
+              <div className="quad-clinical">
+                <div className="quad-clin">
+                  <div className="quad-clin-num">{selected.clinical.cases}</div>
+                  <div className="quad-clin-lbl">{t("clin.cases")}</div>
+                </div>
+                <div className="quad-clin">
+                  <div className="quad-clin-num">{selected.clinical.success}</div>
+                  <div className="quad-clin-lbl">{t("clin.success")}</div>
+                </div>
+                <div className="quad-clin">
+                  <div className="quad-clin-num">{selected.clinical.time}</div>
+                  <div className="quad-clin-lbl">{t("clin.time")}</div>
+                </div>
+                <div className="quad-clin">
+                  <div className="quad-clin-num">{selected.clinical.hospitals}</div>
+                  <div className="quad-clin-lbl">{t("clin.hospitals")}</div>
+                </div>
+              </div>
+
+              <div className="quad-section-title">{t("panel.videos")}</div>
+              <div className="quad-videos">
+                {selected.videos.map((v) => {
+                  const isPlaying = playingVideo?.id === v.id;
+                  return (
                     <button
                       key={v.id}
-                      className="video-thumb-btn"
-                      onClick={() => onVideoClick(v)}
+                      className={`video-thumb-btn ${isPlaying ? "playing" : ""}`}
+                      onClick={() => setPlayingVideo(v)}
                     >
                       <div className="placeholder-media video-thumb">
-                        <div className="play-icon">▶</div>
+                        {isPlaying && (
+                          <div className="now-playing-badge">
+                            <span className="np-dot" />
+                            {lang === "ko" ? "재생 중" : "NOW PLAYING"}
+                          </div>
+                        )}
+                        <div className="play-icon">
+                          {isPlaying ? (
+                            <span className="eq-bars" aria-hidden>
+                              <span /><span /><span /><span />
+                            </span>
+                          ) : (
+                            "▶"
+                          )}
+                        </div>
                         <div className="video-label">{v.title}</div>
                       </div>
                     </button>
-                  ))}
-                </div>
-              </section>
-
-              <section>
-                <h3 className="panel-h3">{t("panel.clinical")}</h3>
-                <div className="clinical-grid">
-                  <div className="clinical-card">
-                    <div className="clinical-num">{featured.clinical.cases}</div>
-                    <div className="clinical-lbl">{t("clin.cases")}</div>
-                  </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{featured.clinical.success}</div>
-                    <div className="clinical-lbl">{t("clin.success")}</div>
-                  </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{featured.clinical.time}</div>
-                    <div className="clinical-lbl">{t("clin.time")}</div>
-                  </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{featured.clinical.hospitals}</div>
-                    <div className="clinical-lbl">{t("clin.hospitals")}</div>
-                  </div>
-                </div>
-                <div className="clinical-chart placeholder-media">
-                  <span className="ph-label">[ Clinical Outcomes Chart / Trial Summary ]</span>
-                </div>
-                <ul className="clinical-list">
-                  <li>{lang === "ko" ? "(더미) 다기관 임상시험 — 환자 만족도 96%" : "(dummy) Multi-center trial — 96% patient satisfaction"}</li>
-                  <li>{lang === "ko" ? "(더미) 평균 시술 시간 32% 단축" : "(dummy) Average procedure time reduced by 32%"}</li>
-                  <li>{lang === "ko" ? "(더미) 합병증 발생률 1.5% 미만" : "(dummy) Complication rate < 1.5%"}</li>
-                </ul>
-              </section>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

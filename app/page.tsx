@@ -4,13 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Lang, VideoItem } from "@/lib/products";
 import LayoutOne from "@/components/LayoutOne";
 import LayoutTwo from "@/components/LayoutTwo";
-import LayoutThree from "@/components/LayoutThree";
 
 const IDLE_DELAY = 90_000;
 
 export default function Home() {
   const lang: Lang = "en";
-  const [layout, setLayout] = useState<1 | 2 | 3>(1);
+  const [layout, setLayout] = useState<1 | 2>(1);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   // Idle reset (reload page to return to defaults)
@@ -49,22 +48,15 @@ export default function Home() {
           </button>
           <button
             className={`layout-btn ${layout === 2 ? "active" : ""}`}
-            onClick={() => setLayout(2)}
-          >
-            Option 2
-          </button>
-          <button
-            className={`layout-btn ${layout === 3 ? "active" : ""}`}
             onClick={() => setLayout(3)}
           >
-            Option 3
+            Option 2
           </button>
         </div>
       </div>
 
       {layout === 1 && <LayoutOne lang={lang} onVideoClick={setActiveVideo} />}
       {layout === 2 && <LayoutTwo lang={lang} onVideoClick={setActiveVideo} />}
-      {layout === 3 && <LayoutThree lang={lang} onVideoClick={setActiveVideo} />}
 
       {/* Video modal (shared) */}
       {activeVideo && (
