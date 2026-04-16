@@ -539,10 +539,10 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .video-modal-inner {
   background: #000;
   border-radius: 22px;
-  width: 98vw;
+  width: 92vw;
   max-width: none;
-  height: 94vh;
-  max-height: 94vh;
+  height: 88vh;
+  max-height: 88vh;
   display: flex; flex-direction: column;
   overflow: hidden;
   box-shadow: 0 40px 100px rgba(0,0,0,0.6);
