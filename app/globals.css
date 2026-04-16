@@ -895,3 +895,186 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
     repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px),
     linear-gradient(135deg, #082345 0%, #0284c7 100%);
 }
+
+/* ===================== Responsive ===================== */
+
+/* ---------- Tablet (≤ 1100px) ---------- */
+@media (max-width: 1100px) {
+  :root { --rail-w: 420px; --gap: 16px; }
+  .app { padding: 16px 18px; }
+  .rail-header { padding: 28px 24px 20px; }
+  .rail-title { font-size: 24px; }
+  .rail-thumb { width: 140px; }
+  .rail-tile { min-height: 130px; gap: 14px; padding: 12px; }
+  .rail-name { font-size: 20px; }
+  .rail-sub { font-size: 12px; }
+  .slide-caption h2 { font-size: 28px; }
+  .slide-caption p { font-size: 14px; }
+  .panel-hero { grid-template-columns: 1fr; }
+  .panel-body { padding: 24px; }
+  .related-videos { grid-template-columns: repeat(2, 1fr); }
+  .clinical-grid { grid-template-columns: repeat(2, 1fr); }
+  .quad-name { font-size: 20px; }
+  .quad-detail-body { padding: 16px 18px 18px; }
+  .quad-specs { grid-template-columns: 1fr 1fr; }
+  .quad-clinical { grid-template-columns: repeat(2, 1fr); }
+  .quad-videos { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- Mobile (≤ 768px) ---------- */
+@media (max-width: 768px) {
+  :root { --rail-w: 100%; --gap: 12px; --radius: 14px; }
+  .app { padding: 12px; height: 100vh; }
+
+  /* Layout toggle */
+  .layout-toggle {
+    top: 10px; left: 10px;
+    padding: 4px 4px 4px 10px;
+  }
+  .layout-toggle-label { font-size: 10px; letter-spacing: 1.5px; }
+  .layout-btn { padding: 8px 12px; font-size: 12px; min-width: 68px; }
+
+  /* ---- Layout 1: stack vertically ---- */
+  .showcase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+  .video-stage,
+  .product-rail,
+  .product-panel {
+    position: relative;
+    top: auto; left: auto; right: auto; bottom: auto;
+    width: 100%;
+  }
+  .video-stage {
+    height: 240px;
+    flex-shrink: 0;
+    opacity: 1;
+    border-radius: var(--radius);
+  }
+  .product-rail {
+    flex: 1;
+    min-height: 0;
+    border-radius: var(--radius);
+    background-origin: padding-box;
+    background-clip: padding-box;
+  }
+  .product-rail::before { display: none; }
+  .showcase:not(.detail) .product-rail {
+    animation: none;
+  }
+  .rail-header { padding: 18px 16px 14px; }
+  .rail-header::before { height: 4px; }
+  .rail-eyebrow { font-size: 11px; letter-spacing: 2px; }
+  .rail-title { font-size: 18px; margin-top: 8px; }
+  .rail-list { padding: 12px; gap: 10px; }
+  .rail-tile {
+    min-height: 100px;
+    padding: 10px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .rail-thumb { width: 90px; height: 90px; border-radius: 10px; }
+  .rail-name { font-size: 16px; }
+  .rail-cat { font-size: 10px; }
+  .rail-sub { font-size: 11px; }
+
+  /* Layout 1: detail mode on mobile */
+  .showcase.detail .video-stage { display: none; }
+  .showcase.detail .product-rail {
+    left: auto;
+    flex: 0 0 auto;
+    max-height: 200px;
+  }
+  .showcase.detail .product-panel {
+    position: relative;
+    left: auto; right: auto;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    border-radius: var(--radius);
+  }
+  .panel-header { padding: 16px 18px; }
+  .panel-title { font-size: 22px; }
+  .panel-body { padding: 18px; gap: 24px; }
+  .panel-hero { grid-template-columns: 1fr; gap: 16px; }
+  .placeholder-media.tall { min-height: 200px; }
+  .spec-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .spec-item { padding: 10px 12px; }
+  .spec-val { font-size: 15px; }
+  .related-videos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .video-thumb { min-height: 120px; }
+  .clinical-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .clinical-card { padding: 14px 10px; }
+  .clinical-num { font-size: 24px; }
+  .clinical-chart { min-height: 160px; }
+
+  /* ---- Layout 2 (Quad): adapt for mobile ---- */
+  .quad-cell { border-radius: var(--radius); }
+  .quad-label { left: 12px; bottom: 10px; }
+  .quad-name { font-size: 16px; margin-top: 4px; }
+  .quad-cat { font-size: 9px; letter-spacing: 1.5px; }
+  .quad-hint { top: 10px; right: 10px; padding: 5px 10px; font-size: 10px; }
+
+  /* Quad: detail panel full-screen overlay */
+  .quad-detail {
+    position: fixed !important;
+    border-radius: 0 !important;
+    z-index: 200;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease !important;
+  }
+  .quad.active .quad-detail {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  .quad-detail-header .panel-title { font-size: 20px; }
+  .quad-specs { grid-template-columns: 1fr 1fr; }
+  .quad-clinical { grid-template-columns: repeat(2, 1fr); }
+  .quad-videos { grid-template-columns: repeat(2, 1fr); }
+  .quad-videos .video-thumb { min-height: 80px; }
+  .now-playing-badge { font-size: 8px; padding: 4px 8px 4px 6px; }
+
+  /* Video modal */
+  .video-modal { padding: 12px; }
+  .video-modal-inner { border-radius: 14px; }
+  .video-modal-header { padding: 12px 16px; }
+  .video-modal-header h3 { font-size: 15px; }
+  .video-modal-close { width: 38px; height: 38px; font-size: 16px; }
+  .video-player { max-height: 50vh; }
+
+  /* Overlay badges */
+  .badges { flex-wrap: wrap; gap: 6px; }
+  .badge { font-size: 10px; padding: 5px 8px; }
+  .stage-overlay { padding: 16px 18px; }
+}
+
+/* ---------- Small phone (≤ 480px) ---------- */
+@media (max-width: 480px) {
+  .app { padding: 8px; }
+  .video-stage { height: 180px; }
+  .slide-caption h2 { font-size: 20px; }
+  .slide-caption p { font-size: 12px; }
+  .slide-dots { gap: 6px; }
+  .dot { width: 8px; height: 8px; }
+  .rail-tile { min-height: 80px; padding: 8px; gap: 10px; }
+  .rail-thumb { width: 70px; height: 70px; }
+  .rail-name { font-size: 14px; }
+  .showcase.detail .product-rail { max-height: 160px; }
+  .panel-title { font-size: 18px; }
+  .panel-body { padding: 14px; gap: 18px; }
+  .spec-grid { grid-template-columns: 1fr; }
+  .related-videos { grid-template-columns: 1fr; }
+  .clinical-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .clinical-num { font-size: 20px; }
+  .quad-name { font-size: 14px; }
+  .quad-hint { font-size: 9px; padding: 4px 8px; }
+}
