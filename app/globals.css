@@ -896,6 +896,108 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
     linear-gradient(135deg, #082345 0%, #0284c7 100%);
 }
 
+/* ===================== 4K / Large Display (≥ 2560px) ===================== */
+@media (min-width: 2560px) {
+  :root { --rail-w: 960px; --gap: 32px; --radius: 26px; }
+  .app { padding: 40px 48px; }
+
+  /* Layout toggle */
+  .layout-toggle {
+    top: 32px; left: 40px;
+    padding: 10px 10px 10px 22px;
+    border-radius: 16px;
+  }
+  .layout-toggle-label { font-size: 14px; letter-spacing: 3px; }
+  .layout-btn { padding: 16px 26px; font-size: 18px; min-width: 130px; border-radius: 12px; }
+
+  /* Video stage */
+  .stage-overlay { padding: 48px 56px; }
+  .slide-caption h2 { font-size: 60px; }
+  .slide-caption p { font-size: 24px; }
+  .badges { gap: 14px; }
+  .badge { font-size: 18px; padding: 12px 20px; }
+  .dot { width: 18px; height: 18px; }
+  .slide-progress { height: 5px; }
+
+  /* Product rail */
+  .rail-header { padding: 56px 48px 40px; }
+  .rail-header::before { height: 8px; }
+  .rail-eyebrow { font-size: 18px; letter-spacing: 4px; }
+  .rail-eyebrow::before { width: 16px; height: 16px; }
+  .rail-title { font-size: 48px; margin-top: 18px; }
+  .rail-list { padding: 32px; gap: 24px; }
+  .rail-tile { min-height: 240px; padding: 24px; gap: 26px; border-radius: 24px; border-width: 3px; }
+  .rail-thumb { width: 280px; border-radius: 20px; }
+  .rail-thumb .ph-label { font-size: 16px; }
+  .rail-cat { font-size: 18px; letter-spacing: 2px; }
+  .rail-name { font-size: 36px; margin: 10px 0 8px; }
+  .rail-sub { font-size: 20px; }
+  .rail-tile::after { width: 8px; }
+  .back-btn { padding: 22px 32px; font-size: 22px; min-height: 68px; border-radius: 16px; }
+  .back-arrow { font-size: 28px; }
+
+  /* Product panel */
+  .panel-header { padding: 32px 44px; }
+  .panel-cat { font-size: 18px; }
+  .panel-title { font-size: 44px; }
+  .panel-body { padding: 48px; gap: 52px; }
+  .panel-desc { font-size: 22px; }
+  .panel-h3 { font-size: 28px; margin-bottom: 24px; }
+  .panel-h3.sm { font-size: 22px; }
+  .panel-h3::before { width: 6px; height: 26px; margin-right: 14px; }
+  .spec-grid { gap: 18px; }
+  .spec-item { padding: 20px 24px; border-radius: 16px; border-left-width: 5px; }
+  .spec-key { font-size: 14px; }
+  .spec-val { font-size: 26px; }
+  .related-videos { gap: 20px; }
+  .video-thumb { min-height: 240px; }
+  .play-icon { width: 80px; height: 80px; font-size: 32px; }
+  .video-label { font-size: 18px; }
+  .clinical-grid { gap: 20px; }
+  .clinical-card { padding: 28px; border-radius: 18px; }
+  .clinical-num { font-size: 48px; }
+  .clinical-lbl { font-size: 16px; margin-top: 12px; }
+  .clinical-chart { min-height: 320px; }
+  .clinical-list li { padding: 18px 24px; font-size: 18px; border-radius: 14px; border-left-width: 5px; }
+
+  /* Video modal */
+  .video-modal { padding: 60px; }
+  .video-modal-inner { border-radius: 28px; max-width: 1800px; }
+  .video-modal-header { padding: 24px 36px; }
+  .video-modal-header h3 { font-size: 24px; }
+  .video-modal-close { width: 60px; height: 60px; font-size: 24px; }
+
+  /* Layout 2: Quad */
+  .quad-label { left: 32px; bottom: 28px; }
+  .quad-cat { font-size: 16px; letter-spacing: 3px; }
+  .quad-name { font-size: 42px; margin-top: 10px; }
+  .quad-hint { top: 28px; right: 28px; padding: 14px 24px; font-size: 16px; letter-spacing: 2px; }
+  .quad-detail-header { padding: 32px 36px; }
+  .quad-detail-header .panel-title { font-size: 36px; }
+  .quad-back { width: 60px; height: 60px; font-size: 26px; }
+  .quad-detail-body { padding: 32px 36px 36px; gap: 28px; }
+  .quad-desc { font-size: 20px; }
+  .quad-section-title { font-size: 16px; letter-spacing: 2px; }
+  .quad-specs { gap: 14px; }
+  .quad-spec { padding: 18px 22px; border-radius: 14px; border-left-width: 5px; }
+  .quad-spec-val { font-size: 28px; }
+  .quad-spec-key { font-size: 13px; }
+  .quad-clinical { gap: 12px; }
+  .quad-clin { padding: 18px 14px; border-radius: 14px; }
+  .quad-clin-num { font-size: 30px; }
+  .quad-clin-lbl { font-size: 13px; }
+  .quad-videos { gap: 14px; }
+  .quad-videos .video-thumb { min-height: 160px; }
+  .quad-videos .play-icon { width: 60px; height: 60px; font-size: 24px; }
+  .quad-videos .video-label { font-size: 15px; }
+  .now-playing-badge { font-size: 12px; padding: 8px 14px 8px 10px; top: 12px; left: 12px; }
+  .np-dot { width: 8px; height: 8px; }
+
+  /* Placeholder media */
+  .placeholder-media { font-size: 20px; min-height: 300px; }
+  .placeholder-media.tall { min-height: 540px; }
+}
+
 /* ===================== Responsive ===================== */
 
 /* ---------- Tablet (≤ 1100px) ---------- */
