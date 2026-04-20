@@ -15,6 +15,7 @@ export default function LayoutOne({
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [expandedPaper, setExpandedPaper] = useState<string | null>(null);
 
   const t = (k: string) => TR[lang][k] ?? k;
   const product = PRODUCTS.find((p) => p.id === selectedId);
@@ -81,7 +82,7 @@ export default function LayoutOne({
       <aside className="product-rail">
         <div className="rail-header">
           {isDetail ? (
-            <button className="back-btn rail-back" onClick={() => setSelectedId(null)}>
+            <button className="back-btn rail-back" onClick={() => { setSelectedId(null); setExpandedPaper(null); }}>
               <span className="back-arrow">←</span>
               <span>{t("panel.back")}</span>
             </button>
@@ -97,7 +98,7 @@ export default function LayoutOne({
             <button
               key={p.id}
               className={`rail-tile ${selectedId === p.id ? "selected" : ""}`}
-              onClick={() => setSelectedId(p.id)}
+              onClick={() => { setSelectedId(p.id); setExpandedPaper(null); }}
             >
               <div className="rail-thumb placeholder-media">
                 <span className="ph-label">[ {p.name} ]</span>
@@ -123,25 +124,37 @@ export default function LayoutOne({
             </div>
 
             <div className="panel-body">
-              <section className="panel-hero">
-                <div className="placeholder-media tall">
-                  <span className="ph-label">[ {product.name} — Hero Image / Video ]</span>
-                </div>
-                <div className="panel-intro">
-                  <p className="panel-desc">{product.desc[lang]}</p>
-                  <h3 className="panel-h3 sm">{t("panel.specs")}</h3>
-                  <div className="spec-grid">
-                    {product.specs.map((s) => (
-                      <div key={s.k} className="spec-item">
-                        <div className="spec-key">{s.k}</div>
-                        <div className="spec-val">{s.v}</div>
-                      </div>
-                    ))}
+              {/* Section 1: Brochure-aligned overview — image + text description */}
+              <section className="panel-section brochure">
+                <div className="brochure-grid">
+                  <div className="placeholder-media tall brochure-image">
+                    <span className="ph-label">[ {product.name} — Product Image ]</span>
+                  </div>
+                  <div className="brochure-text">
+                    <div className="brochure-cat">{product.category}</div>
+                    <h3 className="brochure-heading">{product.sub}</h3>
+                    <p className="brochure-desc">{product.desc[lang]}</p>
+                    {product.highlights && product.highlights.length > 0 && (
+                      <ul className="brochure-highlights">
+                        {product.highlights.map((h, i) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="brochure-specs">
+                      {product.specs.slice(0, 4).map((s) => (
+                        <div key={s.k} className="brochure-spec">
+                          <div className="brochure-spec-key">{s.k}</div>
+                          <div className="brochure-spec-val">{s.v}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>
 
-              <section>
+              {/* Section 2: Related videos */}
+              <section className="panel-section">
                 <h3 className="panel-h3">{t("panel.videos")}</h3>
                 <div className="related-videos">
                   {product.videos.map((v) => (
@@ -159,8 +172,11 @@ export default function LayoutOne({
                 </div>
               </section>
 
-              <section>
+              {/* Section 3: Clinical Data — summary + paper list */}
+              <section className="panel-section">
                 <h3 className="panel-h3">{t("panel.clinical")}</h3>
+
+                <div className="clinical-summary-label">{t("panel.summary")}</div>
                 <div className="clinical-grid">
                   <div className="clinical-card">
                     <div className="clinical-num">{product.clinical.cases}</div>
@@ -179,14 +195,86 @@ export default function LayoutOne({
                     <div className="clinical-lbl">{t("clin.hospitals")}</div>
                   </div>
                 </div>
-                <div className="clinical-chart placeholder-media">
-                  <span className="ph-label">[ Clinical Outcomes Chart / Trial Summary ]</span>
-                </div>
-                <ul className="clinical-list">
-                  <li>{lang === "ko" ? "(더미) 다기관 임상시험 — 환자 만족도 96%" : "(dummy) Multi-center trial — 96% patient satisfaction"}</li>
-                  <li>{lang === "ko" ? "(더미) 평균 시술 시간 32% 단축" : "(dummy) Average procedure time reduced by 32%"}</li>
-                  <li>{lang === "ko" ? "(더미) 합병증 발생률 1.5% 미만" : "(dummy) Complication rate < 1.5%"}</li>
-                </ul>
+
+                {product.papers && product.papers.length > 0 && (
+                  <div className="papers-block">
+                    <div className="papers-header">
+                      <div className="clinical-summary-label">{t("panel.papers")}</div>
+                      <div className="papers-hint">{t("papers.hint")}</div>
+                    </div>
+                    <div className="papers-list">
+                      {product.papers.map((p) => {
+                        const open = expandedPaper === p.id;
+                        return (
+                          <div key={p.id} className={`paper-item ${open ? "open" : ""}`}>
+                            <button
+                              className="paper-row"
+                              onClick={() =>
+                                setExpandedPaper(open ? null : p.id)
+                              }
+                              aria-expanded={open}
+                            >
+                              <div className="paper-row-main">
+                                <div className="paper-title">{p.title}</div>
+                                <div className="paper-meta">
+                                  <span className="paper-journal">{p.journal}</span>
+                                  <span className="paper-dot">·</span>
+                                  <span>{p.year}</span>
+                                  {p.type && (
+                                    <>
+                                      <span className="paper-dot">·</span>
+                                      <span className="paper-type">{p.type}</span>
+                                    </>
+                                  )}
+                                </div>
+                                <div className="paper-authors">{p.authors}</div>
+                              </div>
+                              <div className="paper-chevron" aria-hidden>
+                                {open ? "▲" : "▼"}
+                              </div>
+                            </button>
+                            {open && (
+                              <div className="paper-detail">
+                                <div className="paper-detail-section">
+                                  <div className="paper-detail-label">
+                                    {t("paper.abstract")}
+                                  </div>
+                                  <p className="paper-abstract">{p.abstract}</p>
+                                </div>
+                                <div className="paper-detail-grid">
+                                  <div>
+                                    <div className="paper-detail-label">
+                                      {t("paper.authors")}
+                                    </div>
+                                    <div className="paper-detail-val">{p.authors}</div>
+                                  </div>
+                                  <div>
+                                    <div className="paper-detail-label">
+                                      {t("paper.journal")}
+                                    </div>
+                                    <div className="paper-detail-val">
+                                      {p.journal}, {p.year}
+                                    </div>
+                                  </div>
+                                  {p.doi && (
+                                    <div>
+                                      <div className="paper-detail-label">
+                                        {t("paper.doi")}
+                                      </div>
+                                      <div className="paper-detail-val paper-doi">
+                                        {p.doi}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </section>
             </div>
           </>

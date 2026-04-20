@@ -2,15 +2,29 @@ export type Lang = "ko" | "en";
 
 export type VideoItem = { id: string; title: string; src: string };
 
+export type Paper = {
+  id: string;
+  title: string;
+  authors: string;
+  journal: string;
+  year: number;
+  type?: string; // e.g., "RCT", "Cohort Study", "Case Series"
+  abstract: string;
+  doi?: string;
+  url?: string;
+};
+
 export type Product = {
   id: number;
   name: string;
   category: string;
   sub: string;
   desc: Record<Lang, string>;
+  highlights?: string[]; // brochure-aligned bullet points
   specs: { k: string; v: string }[];
   clinical: { cases: string; success: string; time: string; hospitals: string };
   videos: VideoItem[];
+  papers: Paper[];
 };
 
 export const PRODUCTS: Product[] = [
@@ -35,6 +49,44 @@ export const PRODUCTS: Product[] = [
       { id: "r1-proc", title: "Live Procedure", src: "" },
       { id: "r1-intv", title: "Surgeon Interview", src: "" },
     ],
+    highlights: [
+      "(dummy) 7 degrees of freedom for unprecedented dexterity in confined anatomy",
+      "(dummy) 3.2 mm distal tip for access to narrow lumens",
+      "(dummy) Plug & Play setup in under 5 minutes",
+      "(dummy) Compatible with standard OR workflow",
+    ],
+    papers: [
+      {
+        id: "r1-p1",
+        title: "Clinical safety and feasibility of a novel 7-DOF flexible robotic endoscope: a first-in-human study",
+        authors: "Kim JH, Park SY, Lee MJ, et al.",
+        journal: "Gastrointestinal Endoscopy",
+        year: 2025,
+        type: "Prospective Cohort",
+        abstract: "(dummy) In this first-in-human prospective cohort study of 48 patients undergoing complex colorectal procedures, the EndoFlex R1 platform demonstrated a 98.5% technical success rate with no device-related serious adverse events. Mean procedure time was reduced by 32% compared to historical controls. These findings support the safety and feasibility of the 7-DOF flexible robotic platform.",
+        doi: "10.xxxx/gie.2025.0042",
+      },
+      {
+        id: "r1-p2",
+        title: "Comparative efficacy of flexible robotic endoscopy versus conventional endoscopy in colorectal polypectomy",
+        authors: "Chen L, Tanaka K, Rossi G, et al.",
+        journal: "Endoscopy",
+        year: 2025,
+        type: "RCT",
+        abstract: "(dummy) This multicenter randomized controlled trial (n=210) compared the EndoFlex R1 against conventional colonoscopy for complex polyp removal. The robotic arm achieved a 96% en-bloc resection rate vs 82% in control (p<0.01) with lower perforation rates.",
+        doi: "10.xxxx/endo.2025.1188",
+      },
+      {
+        id: "r1-p3",
+        title: "Learning curve analysis of the 7-DOF flexible robotic endoscope platform",
+        authors: "Park SY, Kim JH, et al.",
+        journal: "Surgical Endoscopy",
+        year: 2024,
+        type: "Observational",
+        abstract: "(dummy) Analysis of 320 consecutive procedures performed by 12 operators suggests a learning curve plateau at approximately 15 cases, with procedure time stabilization at approximately 28 minutes.",
+        doi: "10.xxxx/se.2024.0901",
+      },
+    ],
   },
   {
     id: 2,
@@ -56,6 +108,34 @@ export const PRODUCTS: Product[] = [
       { id: "c2-demo", title: "Console Walkthrough", src: "" },
       { id: "c2-ergo", title: "Ergonomics Test", src: "" },
       { id: "c2-haptic", title: "Haptic Demo", src: "" },
+    ],
+    highlights: [
+      "(dummy) 32-inch 3D 4K stereoscopic display for immersive visualization",
+      "(dummy) Sub-20ms haptic feedback latency",
+      "(dummy) Ergonomic seating designed for 3+ hour procedures",
+      "(dummy) 6-axis foot pedals for hands-free control",
+    ],
+    papers: [
+      {
+        id: "c2-p1",
+        title: "Surgeon ergonomics and cognitive load during robotic endoscopy: validation of the C2 console",
+        authors: "Alvarez R, Müller T, Yamamoto H, et al.",
+        journal: "Journal of Minimally Invasive Surgery",
+        year: 2025,
+        type: "Crossover Study",
+        abstract: "(dummy) A crossover study (n=24 surgeons) evaluating musculoskeletal load and NASA-TLX scores demonstrated a 41% reduction in neck and shoulder strain compared to conventional endoscopy.",
+        doi: "10.xxxx/jmis.2025.0217",
+      },
+      {
+        id: "c2-p2",
+        title: "Haptic feedback fidelity in the EndoConsole C2: a phantom model evaluation",
+        authors: "Singh A, Patel D, et al.",
+        journal: "IEEE Transactions on Medical Robotics",
+        year: 2024,
+        type: "Bench Study",
+        abstract: "(dummy) Force-feedback resolution measured against phantom tissue models showed <0.1N discrimination threshold, enabling fine tissue manipulation equivalent to open surgical conditions.",
+        doi: "10.xxxx/tmrb.2024.1455",
+      },
     ],
   },
   {
@@ -79,6 +159,24 @@ export const PRODUCTS: Product[] = [
       { id: "kit-usage", title: "Clinical Usage", src: "" },
       { id: "kit-variants", title: "Tool Variants", src: "" },
     ],
+    highlights: [
+      "(dummy) 12 purpose-built disposable instruments",
+      "(dummy) EO-sterilized, individually packaged",
+      "(dummy) 3-year shelf life",
+      "(dummy) Compatible with R1 and R2 platforms",
+    ],
+    papers: [
+      {
+        id: "kit-p1",
+        title: "Single-use disposable instruments in flexible robotic endoscopy: infection control and workflow outcomes",
+        authors: "Nguyen TH, O'Brien M, Santos P, et al.",
+        journal: "American Journal of Infection Control",
+        year: 2025,
+        type: "Multicenter Observational",
+        abstract: "(dummy) Analysis across 30 hospitals showed zero device-attributed cross-contamination events over 5,000+ procedures, compared to baseline rates of 0.4% with reusable instruments.",
+        doi: "10.xxxx/ajic.2025.0330",
+      },
+    ],
   },
   {
     id: 4,
@@ -100,6 +198,34 @@ export const PRODUCTS: Product[] = [
       { id: "ai-detect", title: "Lesion Detection Demo", src: "" },
       { id: "ai-analysis", title: "Real-time Analysis", src: "" },
       { id: "ai-integration", title: "System Integration", src: "" },
+    ],
+    highlights: [
+      "(dummy) 96.8% sensitivity for 8 lesion types in real-time",
+      "(dummy) <30ms inference latency enables seamless workflow",
+      "(dummy) Native DICOM / HL7 integration",
+      "(dummy) FDA-cleared deep learning model",
+    ],
+    papers: [
+      {
+        id: "ai-p1",
+        title: "Real-time AI-assisted lesion detection during flexible endoscopy: a prospective multicenter study",
+        authors: "Zhang W, Kumar R, Schmidt F, et al.",
+        journal: "Lancet Digital Health",
+        year: 2025,
+        type: "Prospective Multicenter",
+        abstract: "(dummy) Prospective study across 8 centers (n=2,340 procedures) demonstrated an 18% increase in adenoma detection rate with AI assistance vs standard endoscopy (p<0.001), without meaningful change in procedure time.",
+        doi: "10.xxxx/lanhl.2025.0014",
+      },
+      {
+        id: "ai-p2",
+        title: "Validation of an AI-driven diagnostic module across diverse patient populations",
+        authors: "Okonkwo C, Abdi S, Martinez L, et al.",
+        journal: "Nature Medicine",
+        year: 2024,
+        type: "Validation Study",
+        abstract: "(dummy) Cross-population validation (n=1,800) in 4 countries confirmed consistent sensitivity (95-97%) and specificity (92-94%) across demographic subgroups.",
+        doi: "10.xxxx/nm.2024.2277",
+      },
     ],
   },
 ];
@@ -147,5 +273,14 @@ export const TR: Record<Lang, Record<string, string>> = {
     "clin.success": "Success Rate",
     "clin.time": "Procedure Time",
     "clin.hospitals": "Hospitals",
+    "panel.overview": "Overview",
+    "panel.highlights": "Key Highlights",
+    "panel.summary": "Summary",
+    "panel.papers": "Publications",
+    "papers.hint": "Tap any row to view details",
+    "paper.abstract": "Abstract",
+    "paper.authors": "Authors",
+    "paper.journal": "Journal",
+    "paper.doi": "DOI",
   },
 };
