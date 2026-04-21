@@ -9,6 +9,7 @@ export type Component = {
   image?: string;
   description?: string;
   specs?: { k: string; v: string }[];
+  papers?: Paper[];
 };
 
 export type Paper = {
@@ -21,6 +22,16 @@ export type Paper = {
   abstract: string;
   doi?: string;
   url?: string;
+  pdf?: string;  // local PDF path under public/
+  clinical?: {   // extracted clinical data highlights
+    patients?: string;
+    enBloc?: string;
+    r0?: string;
+    procedureTime?: string;
+    dissectionSpeed?: string;
+    complications?: string;
+    notes?: string;
+  };
 };
 
 export type Product = {
@@ -88,11 +99,108 @@ export const PRODUCTS: Product[] = [
         name: "Articulated Basic Gripper G",
         group: "Instrument",
         image: "",
-        description: "(실제 데이터 미입력) Single-arm articulated gripper for standard traction during ESD.",
+        description: "Single-arm articulated gripper (alligator-type) with 2 joints, wrist ±90° and arm ±100° movements, and ±110° rotation for multidirectional traction during ESD.",
         specs: [
-          { k: "Degrees of Freedom", v: "—" },
-          { k: "Gripping Force", v: "—" },
-          { k: "Tip Diameter", v: "—" },
+          { k: "Joints", v: "2 (wrist + arm)" },
+          { k: "Wrist Rotation", v: "±90°" },
+          { k: "Arm Rotation", v: "±100°" },
+          { k: "Circumferential Rotation", v: "±110°" },
+        ],
+        papers: [
+          {
+            id: "ab-2026-tvaradze-barretts",
+            title: "Robotic-assisted esophageal endoscopic submucosal dissection in a compact and extensive early Barrett's cancer lesion",
+            authors: "Tvaradze G, Tanabe M, Yamamoto K, Groth S, Maggio EM, Inoue H, Seewald S",
+            journal: "Endoscopy",
+            year: 2026,
+            type: "Case Report (E-video, Vol 58 S01: E323-E324)",
+            abstract: "First esophageal ESD using the EndoRobotics Alligator (ROBOPERA & TraCloser). 11 cm Barrett's adenocarcinoma (0-Is + IIb, >70% circumferential) with 5 cm compact component. The device provided true four-axis independent movements (grip, wrist, arm, rotation), enabling multidirectional traction to re-expose the dissection plane at the later stage of the procedure. Lesion resected en bloc; R0 resection histologically confirmed; no intra- or post-procedural adverse events.",
+            doi: "10.1055/a-2802-4223",
+            url: "https://doi.org/10.1055/a-2802-4223",
+            pdf: "/assets/products/robopera/components/basic-gripper-g/papers/2026_Tvaradze_Barretts_Endoscopy.pdf",
+            clinical: {
+              patients: "1 (case report)",
+              enBloc: "100%",
+              r0: "100%",
+              complications: "0",
+              notes: "11 cm Barrett's adenocarcinoma, >70% circumferential; four-axis multidirectional traction enabled plane revisualization at late dissection stage.",
+            },
+          },
+          {
+            id: "ab-2025-jeon-gie-fih",
+            title: "A novel robotic arm–assisted endoscopic submucosal dissection platform with augmented traction for gastric neoplasms: a first-in-human prospective pilot study (with videos)",
+            authors: "Jeon HJ, Keum B, Lee B, Kim S, Choi HS, Lee JM, Kim ES, Jeen YT, Lee HS, Chun HJ",
+            journal: "Gastrointestinal Endoscopy",
+            year: 2025,
+            type: "First-in-human Prospective Pilot",
+            abstract: "Prospective single-arm study of 15 consecutive patients undergoing ROBOPERA-assisted gastric ESD at Korea University Medical Center (Jun–Sep 2024). Primary endpoint: en bloc resection. All patients achieved en bloc and R0 resection (100%). Mean total procedure time 28.8 ± 11.7 min; median robot-assisted dissection time 14.3 min; dissection speed 48.2 ± 21.0 mm²/min (exceeding the proficiency benchmark of 15 mm²/min). No ROBOPERA malfunctions. Specimen injury in 4 cases (26.7%); acute bleeding 13.3%; delayed bleeding 6.7%; no perforations.",
+            doi: "10.1016/j.gie.2025.09.012",
+            url: "https://doi.org/10.1016/j.gie.2025.09.012",
+            clinical: {
+              patients: "15",
+              enBloc: "100% (15/15)",
+              r0: "100% (15/15)",
+              procedureTime: "28.8 ± 11.7 min (mean TPT)",
+              dissectionSpeed: "48.2 ± 21.0 mm²/min",
+              complications: "0 perforations; acute bleeding 13.3%, delayed bleeding 6.7%, prolonged stay 6.7%",
+              notes: "RDT/TPT ratio 53.8%; median 3.9 grasps; 26.7% specimen mechanical injury",
+            },
+          },
+          {
+            id: "ab-2024-kim-surgendo-challenging",
+            title: "Robot-assisted gastric endoscopic submucosal dissection significantly improves procedure time at challenging dissection locations",
+            authors: "Kim SH, Kwon T, Choi HS, Kim C, Won S, Jeon HJ, Kim ES, Keum B, Jeen YT, Hwang JH, Chun HJ",
+            journal: "Surgical Endoscopy",
+            year: 2024,
+            type: "Simulator-based Comparative Study",
+            abstract: "Prospective comparison of ROBOPERA-assisted ESD (RESD) vs. conventional ESD (CESD) by trainee endoscopists on a novel gastric simulator (EndoGel). Challenging location (lesser curvature of middle/upper body): RESD 6.2 min vs CESD 10.2 min (P<0.05); dissection speed 220.3 vs 101.9 mm²/min (P<0.05); blind dissection rate 17.6% vs 35.2% (P<0.05). Muscle injuries: RESD 0% vs CESD 12%. Easy location (antrum lesser curvature): dissection speed 193.2 vs 153.6 mm²/min (P<0.05). ROBOPERA significantly reduces technical difficulty at challenging locations for trainees.",
+            doi: "10.1007/s00464-024-10743-9",
+            url: "https://doi.org/10.1007/s00464-024-10743-9",
+            clinical: {
+              patients: "48 simulator procedures (2 trainees × 24)",
+              enBloc: "100% (both RESD and CESD)",
+              procedureTime: "RESD 6.2 min vs CESD 10.2 min at challenging location (P<0.05)",
+              dissectionSpeed: "220.3 (RESD) vs 101.9 (CESD) mm²/min at challenging location",
+              complications: "0 muscle injuries in RESD vs 12% in CESD at challenging location",
+              notes: "NASA-TLX workload 35.2 (RESD) vs 44.6 (CESD) at challenging location (P<0.05)",
+            },
+          },
+          {
+            id: "ab-2021-kim-surgendo-rose",
+            title: "Endoscopic submucosal dissection using a detachable assistant robot: a comparative in vivo feasibility study (with video)",
+            authors: "Kim SH, Kim BG, Choi HS, Hong D, Jang SH, Hong K, Choi JW, Kim SH, Lee JM, Kim ES, Keum B, Jeen YT, Lee HS, Chun HJ",
+            journal: "Surgical Endoscopy",
+            year: 2021,
+            type: "In Vivo Porcine Feasibility Study",
+            abstract: "Comparative feasibility of ROSE (RObot for Surgical Endoscope, 3 DOF, 16 mm diameter) between experienced (n=2, >200 ESDs each) and novice (n=2, diagnostic endoscopy only) endoscopists. 16 gastric lesions resected en bloc across 9 live pigs (6 expert, 10 novice). Incision speed: expert 3.25 vs novice 0.64 cm²/min (P=0.002). Dissection speed: expert 3.21 vs novice 2.30 cm²/min (P=0.365 — novices approached expert speed with robotic assistance). 100% en bloc resection in both groups; no perforation or major bleeding.",
+            doi: "10.1007/s00464-021-08510-1",
+            url: "https://doi.org/10.1007/s00464-021-08510-1",
+            clinical: {
+              patients: "16 lesions in 9 live pigs",
+              enBloc: "100% (16/16)",
+              dissectionSpeed: "Experts 3.21 vs Novices 2.30 cm²/min (P=0.365)",
+              complications: "0 perforations, 0 major bleeding",
+              notes: "Novice incision speed 0.64 vs expert 3.25 cm²/min (P=0.002) — dissection speed gap nearly closed with robotic assist",
+            },
+          },
+          {
+            id: "ab-2019-kim-gutliver-rexter",
+            title: "A pilot study of endoscopic submucosal dissection using an endoscopic assistive robot in a porcine stomach model",
+            authors: "Kim BG, Choi HS, Park SH, Hong JH, Lee JM, Kim SH, Chun HJ, Hong D, Keum B",
+            journal: "Gut and Liver",
+            year: 2019,
+            type: "In Vitro Pilot Study",
+            abstract: "Pilot evaluation of REXTER (revolute joint-based auxiliary transluminal endoscopic robot, 4 DOF, 15 mm links) — earliest RoSE-Platform prototype. 40 ESDs (10 per group × 2 methods × 2 skill levels) on 40 ex vivo porcine stomachs. Conventional ESD: experts 0/10 perforations vs novices 6/10; operation time 11.3 vs 26.7 min. Robot-assisted ESD: novice perforation rate dropped dramatically from 6/10 to 1/10. Novices achieved en bloc resection in all 10 robot-assisted cases (vs 2 piecemeal in conventional). Robotic assistance enabled novices to maintain knife parallel to stomach wall, markedly improving safety.",
+            doi: "10.5009/gnl18370",
+            url: "https://doi.org/10.5009/gnl18370",
+            clinical: {
+              patients: "40 ex vivo porcine ESDs",
+              enBloc: "100% (novices RESD) vs 80% (novices CESD)",
+              procedureTime: "Experts 11.3 min (CESD/RESD) vs novices 26.7 (CESD) / 27.4 (RESD)",
+              complications: "Novice perforations: 6/10 (CESD) → 1/10 (RESD) — 83% reduction",
+              notes: "RoSE-Platform precursor study; established safety benefit for unskilled operators",
+            },
+          },
         ],
       },
       {
