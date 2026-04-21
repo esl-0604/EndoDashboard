@@ -40,42 +40,74 @@ export default function LayoutOne({
 
   return (
     <div className={`showcase ${isDetail ? "detail" : ""}`}>
-      <section className="video-stage" aria-hidden={isDetail}>
-        <div className="slides">
-          {SLIDES.map((_, i) => (
-            <div
-              key={i}
-              className={`slide placeholder-media ${i === slideIdx ? "active" : ""}`}
-            >
-              <span className="ph-label">[ Video {i + 1} — {SLIDES[i].en.t} ]</span>
+      <section className="video-stage">
+        {isDetail && product ? (
+          product.videos[0]?.src ? (
+            <video
+              key={product.id}
+              src={product.videos[0].src}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="stage-video"
+            />
+          ) : (
+            <div className="slide placeholder-media active product-loop">
+              <span className="ph-label">
+                ▶ [ {product.name} — Product Video Loop ]
+              </span>
             </div>
-          ))}
-        </div>
+          )
+        ) : (
+          <div className="slides">
+            {SLIDES.map((_, i) => (
+              <div
+                key={i}
+                className={`slide placeholder-media ${i === slideIdx ? "active" : ""}`}
+              >
+                <span className="ph-label">[ Video {i + 1} — {SLIDES[i].en.t} ]</span>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="stage-overlay">
           <div className="badges">
             <span className="badge">● FDA Cleared</span>
             <span className="badge">● CE Marked</span>
             <span className="badge">● KFDA</span>
           </div>
-          <div className="slide-caption">
-            <h2>{slide.t}</h2>
-            <p>{slide.d}</p>
-          </div>
-          <div className="slide-controls">
-            <div className="slide-dots">
-              {SLIDES.map((_, i) => (
-                <button
-                  key={i}
-                  className={`dot ${i === slideIdx ? "active" : ""}`}
-                  onClick={() => setSlideIdx(i)}
-                  aria-label={`Slide ${i + 1}`}
-                />
-              ))}
+          {isDetail && product ? (
+            <div className="slide-caption">
+              <h2>{product.name}</h2>
+              <p>{product.sub}</p>
             </div>
-            <div className="slide-progress">
-              <div className="slide-progress-bar" style={{ width: `${progress}%` }} />
-            </div>
-          </div>
+          ) : (
+            <>
+              <div className="slide-caption">
+                <h2>{slide.t}</h2>
+                <p>{slide.d}</p>
+              </div>
+              <div className="slide-controls">
+                <div className="slide-dots">
+                  {SLIDES.map((_, i) => (
+                    <button
+                      key={i}
+                      className={`dot ${i === slideIdx ? "active" : ""}`}
+                      onClick={() => setSlideIdx(i)}
+                      aria-label={`Slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+                <div className="slide-progress">
+                  <div
+                    className="slide-progress-bar"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 

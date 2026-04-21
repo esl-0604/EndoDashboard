@@ -124,11 +124,24 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   bottom: 0;
 }
 
+/* ---------- Layout custom properties ---------- */
+:root {
+  --strip-h: 200px;       /* bottom rail strip height when in detail mode */
+  --panel-w: 44%;         /* detail panel width when in detail mode */
+}
+
 /* Default state */
 .video-stage {
   left: 0;
   right: calc(var(--rail-w) + var(--gap));
-  transition: opacity 0.4s ease, right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  top: 0;
+  bottom: 0;
+  transition:
+    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.4s ease;
   border-radius: 18px;
   overflow: hidden;
   background: #0b2545;
@@ -136,11 +149,28 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   opacity: 0.82;
   z-index: 1;
 }
+.stage-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
 
 .product-rail {
   width: var(--rail-w);
   left: calc(100% - var(--rail-w));
-  transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  top: 0;
+  bottom: 0;
+  height: auto;
+  right: auto;
+  transition:
+    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 5;
   background:
     radial-gradient(140% 60% at 100% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
@@ -189,8 +219,10 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 }
 
 .product-panel {
-  left: calc(var(--rail-w) + var(--gap));
+  left: calc(100% - var(--panel-w));
   right: 0;
+  top: 0;
+  bottom: 0;
   transform: translateX(calc(100% + 80px));
   opacity: 0;
   pointer-events: none;
@@ -202,20 +234,89 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   display: flex; flex-direction: column;
   overflow: hidden;
   transition:
+    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s ease;
 }
 
-/* Detail mode: rail slides to left, panel slides in from right */
-.showcase.detail .product-rail { left: 0; }
-.showcase.detail .video-stage { opacity: 0; pointer-events: none; }
+/* ========= Detail mode ========= */
+/* Video stage: stays visible on the LEFT, shrinks to accommodate panel + strip */
+.showcase.detail .video-stage {
+  right: calc(var(--panel-w) + var(--gap));
+  bottom: calc(var(--strip-h) + var(--gap));
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Hide attract animation when detail open (no pulsing) */
+.showcase.detail .product-rail { animation: none !important; }
+
+/* Rail: slides to BOTTOM as horizontal strip */
+.showcase.detail .product-rail {
+  left: 0;
+  right: 0;
+  width: auto;
+  top: auto;
+  bottom: 0;
+  height: var(--strip-h);
+  border-radius: 22px;
+  flex-direction: row;
+  transition:
+    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Rail header becomes a compact left section (just back button) */
+.showcase.detail .rail-header {
+  flex-shrink: 0;
+  width: 200px;
+  border-bottom: none;
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.showcase.detail .rail-header::before { display: none; }
+.showcase.detail .rail-back { width: 100%; }
+/* Rail list becomes horizontal scroll */
+.showcase.detail .rail-list {
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 20px;
+  gap: 14px;
+  align-items: stretch;
+}
+/* Rail tile in strip: compact, horizontal */
+.showcase.detail .rail-tile {
+  flex-shrink: 0;
+  width: 320px;
+  min-height: 0;
+  padding: 12px;
+  gap: 12px;
+}
+.showcase.detail .rail-thumb {
+  width: 140px;
+  height: auto;
+  flex-shrink: 0;
+}
+.showcase.detail .rail-name { font-size: 18px; }
+.showcase.detail .rail-cat { font-size: 11px; }
+.showcase.detail .rail-sub { font-size: 12px; }
+
+/* Detail panel: slides in from right, top position, height reduced by strip */
 .showcase.detail .product-panel {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
+  bottom: calc(var(--strip-h) + var(--gap));
   transition:
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
-    opacity 0.4s ease 0.2s;
+    opacity 0.4s ease 0.2s,
+    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---------- Video stage content ---------- */
