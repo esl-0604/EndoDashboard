@@ -903,6 +903,211 @@ img.brochure-image {
 }
 .paper-doi { font-family: monospace; font-size: 14px; color: var(--accent); }
 
+/* ---------- Hero Stats (Clinical Summary replacement) ---------- */
+.hero-stats {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.hero-stat {
+  position: relative;
+  padding: 28px 22px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(10,35,70,0.06);
+  overflow: hidden;
+}
+.hero-stat.highlight {
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  border-top-color: transparent;
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(2,132,199,0.32);
+}
+.hero-stat.highlight::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(140% 80% at 0% 0%, rgba(255,255,255,0.2), transparent 60%);
+  pointer-events: none;
+}
+.hero-stat-value {
+  position: relative;
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  color: var(--text);
+}
+.hero-stat.highlight .hero-stat-value { color: #fff; }
+.hero-stat-label {
+  position: relative;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 14px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+.hero-stat.highlight .hero-stat-label { color: #fff; }
+.hero-stat-sub {
+  position: relative;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+.hero-stat.highlight .hero-stat-sub { color: rgba(255,255,255,0.85); }
+
+/* ---------- Paper hero headline (collapsed card) ---------- */
+.paper-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(2,132,199,0.1), rgba(99,102,241,0.06));
+  border: 1px solid rgba(2,132,199,0.22);
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+.paper-hero-big {
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: -1px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.paper-hero-text { flex: 1; min-width: 0; }
+.paper-hero-label {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.paper-hero-sub {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ---------- Key claims list ---------- */
+.paper-claims {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.paper-claims li {
+  position: relative;
+  padding: 12px 16px 12px 42px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  font-weight: 500;
+}
+.paper-claims li::before {
+  content: "✓";
+  position: absolute;
+  left: 12px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Comparison bar chart ---------- */
+.paper-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(2,132,199,0.05), rgba(99,102,241,0.03));
+  border: 1px solid rgba(2,132,199,0.15);
+  border-radius: 12px;
+}
+.chart-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+.chart-row-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.chart-unit {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.chart-bars { display: flex; flex-direction: column; gap: 6px; }
+.chart-bar-line {
+  display: grid;
+  grid-template-columns: 90px 1fr 80px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.chart-bar-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.chart-bar-line.robotic .chart-bar-name { color: var(--accent); }
+.chart-bar-track {
+  position: relative;
+  height: 22px;
+  background: rgba(10,35,70,0.06);
+  border-radius: 11px;
+  overflow: hidden;
+}
+.chart-bar-fill {
+  height: 100%;
+  border-radius: 11px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chart-bar-fill.conventional {
+  background: linear-gradient(90deg, #9fb3d1, #7a92b5);
+}
+.chart-bar-fill.robotic {
+  background: linear-gradient(90deg, var(--accent), #6366f1);
+  box-shadow: 0 2px 8px rgba(2,132,199,0.3);
+}
+.chart-bar-value {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: right;
+}
+.chart-win-badge {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 2px 7px;
+  background: rgba(255,255,255,0.9);
+  color: var(--accent);
+  border-radius: 999px;
+}
+
 /* Papers grouped by component */
 .papers-group-block { margin-bottom: 20px; }
 .papers-group-block:last-child { margin-bottom: 0; }

@@ -18,12 +18,32 @@ export type Paper = {
   authors: string;
   journal: string;
   year: number;
-  type?: string; // e.g., "RCT", "Cohort Study", "Case Series"
+  type?: string;
   abstract: string;
   doi?: string;
   url?: string;
-  pdf?: string;  // local PDF path under public/
-  clinical?: {   // extracted clinical data highlights
+  pdf?: string;
+
+  /** Promotional headline shown at top of paper card (conference-booth friendly) */
+  highlight?: {
+    big: string;       // e.g., "3.2×", "100%", "7.1 cm"
+    label: string;     // e.g., "Faster Dissection"
+    sub?: string;      // e.g., "vs. expert-level proficiency"
+  };
+  /** 3–4 concise promotional bullet claims */
+  keyClaims?: string[];
+  /** Side-by-side comparative bar chart data */
+  comparison?: {
+    title?: string;
+    items: {
+      label: string;
+      unit?: string;
+      conventional: number;
+      robotic: number;
+      lowerIsBetter?: boolean;
+    }[];
+  };
+  clinical?: {
     patients?: string;
     enBloc?: string;
     r0?: string;
@@ -32,6 +52,14 @@ export type Paper = {
     complications?: string;
     notes?: string;
   };
+};
+
+/** Flexible Summary hero stat for the Clinical Data block */
+export type SummaryStat = {
+  value: string;
+  label: string;
+  sub?: string;
+  highlight?: boolean;
 };
 
 export type Product = {
@@ -46,6 +74,8 @@ export type Product = {
   highlights?: string[]; // brochure-aligned bullet points
   specs: { k: string; v: string }[];
   clinical: { cases: string; success: string; time: string; hospitals: string };
+  /** Flexible hero summary cards for the Clinical Data section (replaces legacy 4-card layout when present) */
+  summary?: SummaryStat[];
   videos: VideoItem[];
   papers: Paper[];
   components?: Component[];
@@ -68,7 +98,13 @@ export const PRODUCTS: Product[] = [
       { k: "Sterilization", v: "Disposable Cartridge" },
       { k: "Clearance", v: "FDA 510(k), CE, KFDA" },
     ],
-    clinical: { cases: "15+", success: "100%", time: "28.8 min", hospitals: "1" },
+    clinical: { cases: "18+", success: "100%", time: "28.8 min", hospitals: "1" },
+    summary: [
+      { value: "100%", label: "En Bloc Resection", sub: "Across all clinical studies", highlight: true },
+      { value: "3.2×", label: "Faster Than Experts", sub: "vs. 15 mm²/min proficiency benchmark" },
+      { value: "83%", label: "Fewer Perforations", sub: "For novice operators (vs. conventional)" },
+      { value: "7", label: "Peer-Reviewed", sub: "Publications in major GI journals" },
+    ],
     videos: [
       { id: "robopera-overview", title: "Overview", src: "" },
       { id: "robopera-procedure", title: "Live Procedure", src: "" },
@@ -113,7 +149,14 @@ export const PRODUCTS: Product[] = [
             authors: "Tvaradze G, Tanabe M, Yamamoto K, Groth S, Maggio EM, Inoue H, Seewald S",
             journal: "Endoscopy",
             year: 2026,
-            type: "Case Report (E-video, Vol 58 S01: E323-E324)",
+            type: "Case Report · E-video",
+            highlight: { big: "11 cm", label: "Barrett's Cancer Resected En Bloc", sub: "First-in-esophagus application" },
+            keyClaims: [
+              "First reported esophageal ESD using EndoRobotics Alligator",
+              "11 cm Barrett's adenocarcinoma, >70% circumferential — R0 resection achieved",
+              "Four-axis multidirectional traction re-exposed the dissection plane at the difficult late stage",
+              "Zero intra- or post-procedural adverse events",
+            ],
             abstract: "First esophageal ESD using the EndoRobotics Alligator (ROBOPERA & TraCloser). 11 cm Barrett's adenocarcinoma (0-Is + IIb, >70% circumferential) with 5 cm compact component. The device provided true four-axis independent movements (grip, wrist, arm, rotation), enabling multidirectional traction to re-expose the dissection plane at the later stage of the procedure. Lesion resected en bloc; R0 resection histologically confirmed; no intra- or post-procedural adverse events.",
             doi: "10.1055/a-2802-4223",
             url: "https://doi.org/10.1055/a-2802-4223",
@@ -132,7 +175,20 @@ export const PRODUCTS: Product[] = [
             authors: "Jeon HJ, Keum B, Lee B, Kim S, Choi HS, Lee JM, Kim ES, Jeen YT, Lee HS, Chun HJ",
             journal: "Gastrointestinal Endoscopy",
             year: 2025,
-            type: "First-in-human Prospective Pilot",
+            type: "First-in-Human Prospective Pilot",
+            highlight: { big: "3.2×", label: "Faster Than Experts", sub: "48.2 mm²/min vs. 15 mm²/min proficiency benchmark" },
+            keyClaims: [
+              "World's first in-human gastric ESD with ROBOPERA — 100% en bloc and R0 resection (15/15)",
+              "Dissection speed 48.2 mm²/min — 3.2× the expert proficiency benchmark",
+              "Mean total procedure time only 28.8 min",
+              "Zero ROBOPERA malfunctions · Zero perforations",
+            ],
+            comparison: {
+              title: "Dissection Speed — ROBOPERA vs. Expert Benchmark",
+              items: [
+                { label: "Dissection Speed", unit: "mm²/min", conventional: 15, robotic: 48.2 },
+              ],
+            },
             abstract: "Prospective single-arm study of 15 consecutive patients undergoing ROBOPERA-assisted gastric ESD at Korea University Medical Center (Jun–Sep 2024). Primary endpoint: en bloc resection. All patients achieved en bloc and R0 resection (100%). Mean total procedure time 28.8 ± 11.7 min; median robot-assisted dissection time 14.3 min; dissection speed 48.2 ± 21.0 mm²/min (exceeding the proficiency benchmark of 15 mm²/min). No ROBOPERA malfunctions. Specimen injury in 4 cases (26.7%); acute bleeding 13.3%; delayed bleeding 6.7%; no perforations.",
             doi: "10.1016/j.gie.2025.09.012",
             url: "https://doi.org/10.1016/j.gie.2025.09.012",
@@ -153,6 +209,22 @@ export const PRODUCTS: Product[] = [
             journal: "Surgical Endoscopy",
             year: 2024,
             type: "Simulator-based Comparative Study",
+            highlight: { big: "39%", label: "Shorter Procedure Time", sub: "at challenging anatomical locations" },
+            keyClaims: [
+              "2.16× faster dissection at the difficult lesser curvature of middle/upper body",
+              "50% reduction in blind dissection rate",
+              "21% lower cognitive workload (NASA-TLX)",
+              "Zero muscle injuries with ROBOPERA (vs. 12% conventional)",
+            ],
+            comparison: {
+              title: "Challenging Location — ROBOPERA vs. Conventional ESD",
+              items: [
+                { label: "Procedure Time", unit: "min", conventional: 10.2, robotic: 6.2, lowerIsBetter: true },
+                { label: "Dissection Speed", unit: "mm²/min", conventional: 101.9, robotic: 220.3 },
+                { label: "Blind Dissection", unit: "%", conventional: 35.2, robotic: 17.6, lowerIsBetter: true },
+                { label: "NASA-TLX Workload", unit: "score", conventional: 44.6, robotic: 35.2, lowerIsBetter: true },
+              ],
+            },
             abstract: "Prospective comparison of ROBOPERA-assisted ESD (RESD) vs. conventional ESD (CESD) by trainee endoscopists on a novel gastric simulator (EndoGel). Challenging location (lesser curvature of middle/upper body): RESD 6.2 min vs CESD 10.2 min (P<0.05); dissection speed 220.3 vs 101.9 mm²/min (P<0.05); blind dissection rate 17.6% vs 35.2% (P<0.05). Muscle injuries: RESD 0% vs CESD 12%. Easy location (antrum lesser curvature): dissection speed 193.2 vs 153.6 mm²/min (P<0.05). ROBOPERA significantly reduces technical difficulty at challenging locations for trainees.",
             doi: "10.1007/s00464-024-10743-9",
             url: "https://doi.org/10.1007/s00464-024-10743-9",
@@ -172,6 +244,20 @@ export const PRODUCTS: Product[] = [
             journal: "Surgical Endoscopy",
             year: 2021,
             type: "In Vivo Porcine Feasibility Study",
+            highlight: { big: "Novices ≈ Experts", label: "Dissection Speed Gap Closed", sub: "with only 30 min of robotic training" },
+            keyClaims: [
+              "Novice dissection speed (2.30 cm²/min) approached expert level (3.21 cm²/min, p=0.365)",
+              "100% en bloc resection across all 16 in vivo gastric lesions",
+              "Zero perforations, zero major bleeding",
+              "Clinically useful proficiency after a single 30-minute training session",
+            ],
+            comparison: {
+              title: "Experts vs. Novices — with RoSE Platform",
+              items: [
+                { label: "Incision Speed", unit: "cm²/min", conventional: 0.64, robotic: 3.25 },
+                { label: "Dissection Speed", unit: "cm²/min", conventional: 2.30, robotic: 3.21 },
+              ],
+            },
             abstract: "Comparative feasibility of ROSE (RObot for Surgical Endoscope, 3 DOF, 16 mm diameter) between experienced (n=2, >200 ESDs each) and novice (n=2, diagnostic endoscopy only) endoscopists. 16 gastric lesions resected en bloc across 9 live pigs (6 expert, 10 novice). Incision speed: expert 3.25 vs novice 0.64 cm²/min (P=0.002). Dissection speed: expert 3.21 vs novice 2.30 cm²/min (P=0.365 — novices approached expert speed with robotic assistance). 100% en bloc resection in both groups; no perforation or major bleeding.",
             doi: "10.1007/s00464-021-08510-1",
             url: "https://doi.org/10.1007/s00464-021-08510-1",
@@ -189,7 +275,20 @@ export const PRODUCTS: Product[] = [
             authors: "Kim BG, Choi HS, Park SH, Hong JH, Lee JM, Kim SH, Chun HJ, Hong D, Keum B",
             journal: "Gut and Liver",
             year: 2019,
-            type: "In Vitro Pilot Study",
+            type: "Ex Vivo Pilot Study",
+            highlight: { big: "83%", label: "Fewer Perforations", sub: "among novice operators vs. conventional" },
+            keyClaims: [
+              "Novice perforation rate dropped from 60% to 10% with robotic assistance",
+              "Safer learning curve — 100% en bloc resection by novices with RoSE platform",
+              "Zero perforations for expert operators in both arms",
+              "Approach-angle correction (knife parallel to gastric wall) improves safety",
+            ],
+            comparison: {
+              title: "Novice Perforation Rate — Conventional vs. RoSE",
+              items: [
+                { label: "Novice Perforations", unit: "out of 10", conventional: 6, robotic: 1, lowerIsBetter: true },
+              ],
+            },
             abstract: "Pilot evaluation of REXTER (revolute joint-based auxiliary transluminal endoscopic robot, 4 DOF, 15 mm links) — earliest RoSE-Platform prototype. 40 ESDs (10 per group × 2 methods × 2 skill levels) on 40 ex vivo porcine stomachs. Conventional ESD: experts 0/10 perforations vs novices 6/10; operation time 11.3 vs 26.7 min. Robot-assisted ESD: novice perforation rate dropped dramatically from 6/10 to 1/10. Novices achieved en bloc resection in all 10 robot-assisted cases (vs 2 piecemeal in conventional). Robotic assistance enabled novices to maintain knife parallel to stomach wall, markedly improving safety.",
             doi: "10.5009/gnl18370",
             url: "https://doi.org/10.5009/gnl18370",
@@ -223,6 +322,24 @@ export const PRODUCTS: Product[] = [
             journal: "Surgical Endoscopy",
             year: 2025,
             type: "In Vivo Porcine Comparative Study",
+            highlight: { big: "100%", label: "Complete Clip Closure", sub: "vs. 66.6% with conventional closure" },
+            keyClaims: [
+              "35% shorter procedure time (10.2 vs 15.8 min)",
+              "1.72× faster dissection speed (157.6 vs 91.4 mm²/min)",
+              "82% reduction in blind dissection rate",
+              "56% fewer clips needed (5.6 vs 12.5)",
+              "Superior histologic healing — narrower epithelial gap and less neovascular infiltration",
+            ],
+            comparison: {
+              title: "Dual Gripper vs. Conventional ESD + Closure",
+              items: [
+                { label: "Procedure Time", unit: "min", conventional: 15.8, robotic: 10.2, lowerIsBetter: true },
+                { label: "Dissection Speed", unit: "mm²/min", conventional: 91.4, robotic: 157.6 },
+                { label: "Blind Dissection", unit: "%", conventional: 47.8, robotic: 8.7, lowerIsBetter: true },
+                { label: "Complete Closure", unit: "%", conventional: 66.6, robotic: 100 },
+                { label: "Clips Used", unit: "count", conventional: 12.5, robotic: 5.6, lowerIsBetter: true },
+              ],
+            },
             abstract: "24 paired gastric lesions in 6 live pigs comparing ROBOPERA-TraCloser-assisted ESD (RESD) vs. conventional ESD (CESD) at greater curvature of antrum and mid-gastric body. RESD showed significantly shorter procedure time (10.2±1.7 vs 15.8±2.1 min, p<0.05), faster dissection speed (157.6±33.3 vs 91.4±23.7 mm²/min, p<0.05), lower blind dissection rate (8.7% vs 47.8%, p<0.05). Complete clip closure: 100% (RESD) vs 66.6% (CESD); closure time 8.6 vs 17.9 min; clips used 5.6 vs 12.5. POD14 follow-up: minimal dehiscence with RESD (2/12) vs frequent dehiscence with CESD (6/8). Histology: narrower absent-epithelium zones (1.4 vs 5.4 mm) and reduced neovascular/fibroblast infiltration with RESD.",
             doi: "10.1007/s00464-025-12182-6",
             url: "https://doi.org/10.1007/s00464-025-12182-6",
@@ -242,7 +359,14 @@ export const PRODUCTS: Product[] = [
             authors: "Kim SH, Choi HS, Jeon HJ, Kim ES, Keum B, Jeen YT, Ahn S, Hwang JH, Chun HJ",
             journal: "VideoGIE",
             year: 2025,
-            type: "Case Series (Vol 10 No. 3: 183-186)",
+            type: "Clinical Case Series",
+            highlight: { big: "7.1 cm", label: "Giant LST, En Bloc in 68 min", sub: "Colorectal ESD in humans — no device exchange" },
+            keyClaims: [
+              "Giant 7.1 × 4.0 cm sigmoid LST resected en bloc in a single session",
+              "Defect closure completed in just 4 min 40 s with the dual gripper",
+              "16-min en bloc resection of mid-rectum NET on an anticoagulated patient",
+              "Seamless traction-to-closure workflow — one platform, no device swap",
+            ],
             abstract: "Two clinical case demonstrations of the ROBOPERA-TraCloser (Dual Gripper) in human colorectal ESD. Case 1: 50-year-old woman with sigmoid colon LST (granular LST of mixed nodular type, JNET 2A with focal 2B) 19 cm from anal verge — en bloc resection in 68 min, specimen 7.1×4.0 cm, histology tubulovillous adenoma with high-grade dysplasia. Case 2: 51-year-old man on anticoagulants with mid-rectum neuroendocrine tumor — en bloc resection in 16 min, defect closure with robotic approximation + TTS clips in 4 min 40 s, specimen 2.3×1.7 cm, NET grade 1. Device supports 270° circumferential movement and enables seamless dissection-to-closure workflow.",
             doi: "10.1016/j.vgie.2024.12.004",
             url: "https://doi.org/10.1016/j.vgie.2024.12.004",

@@ -248,24 +248,44 @@ export default function LayoutOne({
                 <h3 className="panel-h3">{t("panel.clinical")}</h3>
 
                 <div className="clinical-summary-label">{t("panel.summary")}</div>
-                <div className="clinical-grid">
-                  <div className="clinical-card">
-                    <div className="clinical-num">{product.clinical.cases}</div>
-                    <div className="clinical-lbl">{t("clin.cases")}</div>
+                {product.summary && product.summary.length > 0 ? (
+                  <div
+                    className="hero-stats"
+                    style={{
+                      gridTemplateColumns: `repeat(${Math.min(product.summary.length, 4)}, 1fr)`,
+                    }}
+                  >
+                    {product.summary.map((s, i) => (
+                      <div
+                        key={i}
+                        className={`hero-stat ${s.highlight ? "highlight" : ""}`}
+                      >
+                        <div className="hero-stat-value">{s.value}</div>
+                        <div className="hero-stat-label">{s.label}</div>
+                        {s.sub && <div className="hero-stat-sub">{s.sub}</div>}
+                      </div>
+                    ))}
                   </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{product.clinical.success}</div>
-                    <div className="clinical-lbl">{t("clin.success")}</div>
+                ) : (
+                  <div className="clinical-grid">
+                    <div className="clinical-card">
+                      <div className="clinical-num">{product.clinical.cases}</div>
+                      <div className="clinical-lbl">{t("clin.cases")}</div>
+                    </div>
+                    <div className="clinical-card">
+                      <div className="clinical-num">{product.clinical.success}</div>
+                      <div className="clinical-lbl">{t("clin.success")}</div>
+                    </div>
+                    <div className="clinical-card">
+                      <div className="clinical-num">{product.clinical.time}</div>
+                      <div className="clinical-lbl">{t("clin.time")}</div>
+                    </div>
+                    <div className="clinical-card">
+                      <div className="clinical-num">{product.clinical.hospitals}</div>
+                      <div className="clinical-lbl">{t("clin.hospitals")}</div>
+                    </div>
                   </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{product.clinical.time}</div>
-                    <div className="clinical-lbl">{t("clin.time")}</div>
-                  </div>
-                  <div className="clinical-card">
-                    <div className="clinical-num">{product.clinical.hospitals}</div>
-                    <div className="clinical-lbl">{t("clin.hospitals")}</div>
-                  </div>
-                </div>
+                )}
 
                 {(() => {
                   const paperGroups: { label: string | null; papers: Paper[] }[] = [];
@@ -328,6 +348,14 @@ export default function LayoutOne({
                           <div className="papers-list">
                             {grp.papers.map((p) => {
                               const open = expandedPaper === p.id;
+                              const maxValue = p.comparison
+                                ? Math.max(
+                                    ...p.comparison.items.flatMap((i) => [
+                                      i.conventional,
+                                      i.robotic,
+                                    ])
+                                  )
+                                : 1;
                               return (
                                 <div
                                   key={p.id}
@@ -341,7 +369,23 @@ export default function LayoutOne({
                                     aria-expanded={open}
                                   >
                                     <div className="paper-row-main">
-                                      <div className="paper-title">{p.title}</div>
+                                      {p.highlight && (
+                                        <div className="paper-hero">
+                                          <div className="paper-hero-big">
+                                            {p.highlight.big}
+                                          </div>
+                                          <div className="paper-hero-text">
+                                            <div className="paper-hero-label">
+                                              {p.highlight.label}
+                                            </div>
+                                            {p.highlight.sub && (
+                                              <div className="paper-hero-sub">
+                                                {p.highlight.sub}
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
                                       <div className="paper-meta">
                                         <span className="paper-journal">
                                           {p.journal}
@@ -355,6 +399,7 @@ export default function LayoutOne({
                                           </>
                                         )}
                                       </div>
+                                      <div className="paper-title">{p.title}</div>
                                       <div className="paper-authors">{p.authors}</div>
                                     </div>
                                     <div className="paper-chevron" aria-hidden>
@@ -363,6 +408,83 @@ export default function LayoutOne({
                                   </button>
                                   {open && (
                                     <div className="paper-detail">
+                                      {p.keyClaims && p.keyClaims.length > 0 && (
+                                        <div className="paper-detail-section">
+                                          <div className="paper-detail-label">
+                                            Key Findings
+                                          </div>
+                                          <ul className="paper-claims">
+                                            {p.keyClaims.map((c, i) => (
+                                              <li key={i}>{c}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      )}
+                                      {p.comparison && p.comparison.items.length > 0 && (
+                                        <div className="paper-detail-section">
+                                          <div className="paper-detail-label">
+                                            {p.comparison.title ??
+                                              "ROBOPERA vs. Conventional"}
+                                          </div>
+                                          <div className="paper-chart">
+                                            {p.comparison.items.map((item, i) => {
+                                              const cvPct = (item.conventional / maxValue) * 100;
+                                              const rbPct = (item.robotic / maxValue) * 100;
+                                              const win = item.lowerIsBetter
+                                                ? item.robotic < item.conventional
+                                                : item.robotic > item.conventional;
+                                              return (
+                                                <div key={i} className="chart-row">
+                                                  <div className="chart-row-label">
+                                                    {item.label}
+                                                    {item.unit && (
+                                                      <span className="chart-unit">
+                                                        {" "}
+                                                        ({item.unit})
+                                                      </span>
+                                                    )}
+                                                  </div>
+                                                  <div className="chart-bars">
+                                                    <div className="chart-bar-line">
+                                                      <span className="chart-bar-name">
+                                                        Conv.
+                                                      </span>
+                                                      <div className="chart-bar-track">
+                                                        <div
+                                                          className="chart-bar-fill conventional"
+                                                          style={{ width: `${cvPct}%` }}
+                                                        />
+                                                      </div>
+                                                      <span className="chart-bar-value">
+                                                        {item.conventional}
+                                                      </span>
+                                                    </div>
+                                                    <div className="chart-bar-line robotic">
+                                                      <span className="chart-bar-name">
+                                                        ROBOPERA
+                                                      </span>
+                                                      <div className="chart-bar-track">
+                                                        <div
+                                                          className="chart-bar-fill robotic"
+                                                          style={{ width: `${rbPct}%` }}
+                                                        />
+                                                        {win && (
+                                                          <span className="chart-win-badge">
+                                                            ▲ WINS
+                                                          </span>
+                                                        )}
+                                                      </div>
+                                                      <span className="chart-bar-value">
+                                                        {item.robotic}
+                                                      </span>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      )}
                                       <div className="paper-detail-section">
                                         <div className="paper-detail-label">
                                           {t("paper.abstract")}
