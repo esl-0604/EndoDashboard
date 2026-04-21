@@ -100,9 +100,14 @@ export default function LayoutOne({
               className={`rail-tile ${selectedId === p.id ? "selected" : ""}`}
               onClick={() => { setSelectedId(p.id); setExpandedPaper(null); }}
             >
-              <div className="rail-thumb placeholder-media">
-                <span className="ph-label">[ {p.name} ]</span>
-              </div>
+              {p.thumbnail ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.thumbnail} alt={p.name} className="rail-thumb" />
+              ) : (
+                <div className="rail-thumb placeholder-media">
+                  <span className="ph-label">[ {p.name} ]</span>
+                </div>
+              )}
               <div className="rail-info">
                 <div className="rail-cat">{p.category}</div>
                 <div className="rail-name">{p.name}</div>
@@ -127,9 +132,18 @@ export default function LayoutOne({
               {/* Section 1: Brochure-aligned overview — image + text description */}
               <section className="panel-section brochure">
                 <div className="brochure-grid">
-                  <div className="placeholder-media tall brochure-image">
-                    <span className="ph-label">[ {product.name} — Product Image ]</span>
-                  </div>
+                  {product.heroImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.heroImage}
+                      alt={product.name}
+                      className="brochure-image"
+                    />
+                  ) : (
+                    <div className="placeholder-media tall brochure-image">
+                      <span className="ph-label">[ {product.name} — Product Image ]</span>
+                    </div>
+                  )}
                   <div className="brochure-text">
                     <div className="brochure-cat">{product.category}</div>
                     <h3 className="brochure-heading">{product.sub}</h3>
@@ -153,7 +167,64 @@ export default function LayoutOne({
                 </div>
               </section>
 
-              {/* Section 2: Related videos */}
+              {/* Section 2: Components (only if product has them) */}
+              {product.components && product.components.length > 0 && (
+                <section className="panel-section">
+                  <h3 className="panel-h3">
+                    {lang === "ko" ? "구성품" : "Components & Configuration"}
+                  </h3>
+                  {Array.from(
+                    new Set(product.components.map((c) => c.group))
+                  ).map((group) => {
+                    const items = product.components!.filter((c) => c.group === group);
+                    return (
+                      <div key={group} className="components-group">
+                        <div className="components-group-label">{group}</div>
+                        <div
+                          className={`components-grid ${
+                            items.length > 1 ? "multi" : "single"
+                          }`}
+                        >
+                          {items.map((c) => (
+                            <div key={c.id} className="component-card">
+                              {c.image ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={c.image}
+                                  alt={c.name}
+                                  className="component-image"
+                                />
+                              ) : (
+                                <div className="placeholder-media component-image">
+                                  <span className="ph-label">[ {c.name} ]</span>
+                                </div>
+                              )}
+                              <div className="component-body">
+                                <div className="component-name">{c.name}</div>
+                                {c.description && (
+                                  <p className="component-desc">{c.description}</p>
+                                )}
+                                {c.specs && c.specs.length > 0 && (
+                                  <div className="component-specs">
+                                    {c.specs.map((s) => (
+                                      <div key={s.k} className="component-spec">
+                                        <span className="component-spec-key">{s.k}</span>
+                                        <span className="component-spec-val">{s.v}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </section>
+              )}
+
+              {/* Section 3: Related videos */}
               <section className="panel-section">
                 <h3 className="panel-h3">{t("panel.videos")}</h3>
                 <div className="related-videos">

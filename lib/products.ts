@@ -2,6 +2,15 @@ export type Lang = "ko" | "en";
 
 export type VideoItem = { id: string; title: string; src: string };
 
+export type Component = {
+  id: string;
+  name: string;
+  group: string; // top-level grouping e.g. "Driver Unit", "Instrument"
+  image?: string;
+  description?: string;
+  specs?: { k: string; v: string }[];
+};
+
 export type Paper = {
   id: string;
   title: string;
@@ -16,217 +25,145 @@ export type Paper = {
 
 export type Product = {
   id: number;
+  slug: string; // folder name in public/assets/products/
   name: string;
   category: string;
   sub: string;
+  heroImage?: string;
+  thumbnail?: string;
   desc: Record<Lang, string>;
   highlights?: string[]; // brochure-aligned bullet points
   specs: { k: string; v: string }[];
   clinical: { cases: string; success: string; time: string; hospitals: string };
   videos: VideoItem[];
   papers: Paper[];
+  components?: Component[];
 };
 
 export const PRODUCTS: Product[] = [
   {
     id: 1,
-    name: "EndoFlex R1",
-    category: "Flexible Robotic Platform",
-    sub: "Flagship robotic endoscope",
+    slug: "robopera",
+    name: "ROBOPERA",
+    category: "Robotic Endoscopic Platform",
+    sub: "Robotic arm-assisted endoscopic submucosal dissection platform",
     desc: {
-      ko: "(더미) EndoFlex R1은 7자유도 유연 구동을 갖춘 차세대 로봇 내시경 플랫폼으로, 좁고 굴곡진 해부학적 구조에서도 정밀한 시술을 가능하게 합니다.",
-      en: "(dummy) EndoFlex R1 is the next-generation robotic endoscopic platform with 7 degrees of freedom, enabling precise procedures in narrow and tortuous anatomy.",
+      ko: "(실제 데이터 미입력) ROBOPERA는 내시경 선단에 부착되는 로봇팔을 통해 정밀한 견인과 조작을 제공하는 내시경 수술 플랫폼입니다.",
+      en: "ROBOPERA is a robotic endoscopic surgical platform that attaches a dexterous robotic arm to the distal tip of a conventional endoscope, providing precise traction and multidirectional manipulation during endoscopic submucosal dissection.",
     },
     specs: [
-      { k: "Degrees of Freedom", v: "7" },
-      { k: "Distal Diameter", v: "3.2 mm" },
-      { k: "Working Length", v: "1,200 mm" },
-      { k: "Setup Time", v: "< 5 min" },
+      { k: "Compatibility", v: "Standard Endoscope" },
+      { k: "Control", v: "Intuitive UI" },
+      { k: "Sterilization", v: "Disposable Cartridge" },
+      { k: "Clearance", v: "FDA 510(k), CE, KFDA" },
     ],
-    clinical: { cases: "120+", success: "98.5%", time: "-32%", hospitals: "15" },
+    clinical: { cases: "15+", success: "100%", time: "28.8 min", hospitals: "1" },
     videos: [
-      { id: "r1-demo", title: "Demo Video", src: "" },
-      { id: "r1-proc", title: "Live Procedure", src: "" },
-      { id: "r1-intv", title: "Surgeon Interview", src: "" },
+      { id: "robopera-overview", title: "Overview", src: "" },
+      { id: "robopera-procedure", title: "Live Procedure", src: "" },
+      { id: "robopera-interview", title: "Surgeon Interview", src: "" },
     ],
     highlights: [
-      "(dummy) 7 degrees of freedom for unprecedented dexterity in confined anatomy",
-      "(dummy) 3.2 mm distal tip for access to narrow lumens",
-      "(dummy) Plug & Play setup in under 5 minutes",
-      "(dummy) Compatible with standard OR workflow",
+      "Multi-axis traction enables superior visualization of the dissection plane",
+      "Intuitive tendon-sheath drive mechanism",
+      "Attaches to standard diagnostic endoscopes — convert to surgical use in seconds",
+      "FDA 510(k) K244029 (Sep 2025), CE, KFDA cleared",
     ],
-    papers: [
+    papers: [],
+    components: [
       {
-        id: "r1-p1",
-        title: "Clinical safety and feasibility of a novel 7-DOF flexible robotic endoscope: a first-in-human study",
-        authors: "Kim JH, Park SY, Lee MJ, et al.",
-        journal: "Gastrointestinal Endoscopy",
-        year: 2025,
-        type: "Prospective Cohort",
-        abstract: "(dummy) In this first-in-human prospective cohort study of 48 patients undergoing complex colorectal procedures, the EndoFlex R1 platform demonstrated a 98.5% technical success rate with no device-related serious adverse events. Mean procedure time was reduced by 32% compared to historical controls. These findings support the safety and feasibility of the 7-DOF flexible robotic platform.",
-        doi: "10.xxxx/gie.2025.0042",
+        id: "driver-unit",
+        name: "Driver Unit",
+        group: "Driver Unit",
+        image: "",
+        description: "(실제 데이터 미입력) Actuation station that drives the robotic instruments via tendon-sheath mechanism.",
+        specs: [
+          { k: "Dimensions", v: "—" },
+          { k: "Power", v: "—" },
+          { k: "Interface", v: "Plug & Play" },
+        ],
       },
       {
-        id: "r1-p2",
-        title: "Comparative efficacy of flexible robotic endoscopy versus conventional endoscopy in colorectal polypectomy",
-        authors: "Chen L, Tanaka K, Rossi G, et al.",
-        journal: "Endoscopy",
-        year: 2025,
-        type: "RCT",
-        abstract: "(dummy) This multicenter randomized controlled trial (n=210) compared the EndoFlex R1 against conventional colonoscopy for complex polyp removal. The robotic arm achieved a 96% en-bloc resection rate vs 82% in control (p<0.01) with lower perforation rates.",
-        doi: "10.xxxx/endo.2025.1188",
+        id: "basic-gripper-g",
+        name: "Articulated Basic Gripper G",
+        group: "Instrument",
+        image: "",
+        description: "(실제 데이터 미입력) Single-arm articulated gripper for standard traction during ESD.",
+        specs: [
+          { k: "Degrees of Freedom", v: "—" },
+          { k: "Gripping Force", v: "—" },
+          { k: "Tip Diameter", v: "—" },
+        ],
       },
       {
-        id: "r1-p3",
-        title: "Learning curve analysis of the 7-DOF flexible robotic endoscope platform",
-        authors: "Park SY, Kim JH, et al.",
-        journal: "Surgical Endoscopy",
-        year: 2024,
-        type: "Observational",
-        abstract: "(dummy) Analysis of 320 consecutive procedures performed by 12 operators suggests a learning curve plateau at approximately 15 cases, with procedure time stabilization at approximately 28 minutes.",
-        doi: "10.xxxx/se.2024.0901",
+        id: "dual-gripper-g",
+        name: "Articulated Dual Gripper G",
+        group: "Instrument",
+        image: "",
+        description: "(실제 데이터 미입력) Dual-arm articulated gripper for combined traction and closure (TraCloser pattern).",
+        specs: [
+          { k: "Degrees of Freedom", v: "—" },
+          { k: "Gripping Force", v: "—" },
+          { k: "Tip Diameter", v: "—" },
+        ],
       },
     ],
   },
   {
     id: 2,
-    name: "EndoConsole C2",
-    category: "Surgeon Console",
-    sub: "Ergonomic control station",
+    slug: "endocubot",
+    name: "EndoCubot",
+    category: "Endoscopic Robotic Device",
+    sub: "(실제 데이터 미입력 — 브로셔 카피 대기)",
     desc: {
-      ko: "(더미) 햅틱 피드백과 3D 영상을 통합한 외과의 콘솔로, 직관적이고 정밀한 조작을 제공합니다.",
-      en: "(dummy) Surgeon console integrating haptic feedback and 3D imaging for intuitive, precise control.",
+      ko: "(실제 데이터 미입력) EndoCubot 제품 설명을 여기에 입력하세요.",
+      en: "(Real product copy pending.) Enter the EndoCubot description here.",
     },
     specs: [
-      { k: "Display", v: '32" 3D 4K' },
-      { k: "Haptic Force", v: "0.1–10 N" },
-      { k: "Latency", v: "< 20 ms" },
-      { k: "Foot Pedals", v: "6-axis" },
+      { k: "Spec 1", v: "—" },
+      { k: "Spec 2", v: "—" },
+      { k: "Spec 3", v: "—" },
+      { k: "Spec 4", v: "—" },
     ],
-    clinical: { cases: "80+", success: "97.2%", time: "-28%", hospitals: "12" },
+    clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     videos: [
-      { id: "c2-demo", title: "Console Walkthrough", src: "" },
-      { id: "c2-ergo", title: "Ergonomics Test", src: "" },
-      { id: "c2-haptic", title: "Haptic Demo", src: "" },
+      { id: "endocubot-overview", title: "Overview", src: "" },
+      { id: "endocubot-demo", title: "Demo", src: "" },
     ],
     highlights: [
-      "(dummy) 32-inch 3D 4K stereoscopic display for immersive visualization",
-      "(dummy) Sub-20ms haptic feedback latency",
-      "(dummy) Ergonomic seating designed for 3+ hour procedures",
-      "(dummy) 6-axis foot pedals for hands-free control",
+      "(실제 데이터 미입력) 핵심 특징 1",
+      "(실제 데이터 미입력) 핵심 특징 2",
+      "(실제 데이터 미입력) 핵심 특징 3",
     ],
-    papers: [
-      {
-        id: "c2-p1",
-        title: "Surgeon ergonomics and cognitive load during robotic endoscopy: validation of the C2 console",
-        authors: "Alvarez R, Müller T, Yamamoto H, et al.",
-        journal: "Journal of Minimally Invasive Surgery",
-        year: 2025,
-        type: "Crossover Study",
-        abstract: "(dummy) A crossover study (n=24 surgeons) evaluating musculoskeletal load and NASA-TLX scores demonstrated a 41% reduction in neck and shoulder strain compared to conventional endoscopy.",
-        doi: "10.xxxx/jmis.2025.0217",
-      },
-      {
-        id: "c2-p2",
-        title: "Haptic feedback fidelity in the EndoConsole C2: a phantom model evaluation",
-        authors: "Singh A, Patel D, et al.",
-        journal: "IEEE Transactions on Medical Robotics",
-        year: 2024,
-        type: "Bench Study",
-        abstract: "(dummy) Force-feedback resolution measured against phantom tissue models showed <0.1N discrimination threshold, enabling fine tissue manipulation equivalent to open surgical conditions.",
-        doi: "10.xxxx/tmrb.2024.1455",
-      },
-    ],
+    papers: [],
   },
   {
     id: 3,
-    name: "EndoTools Disposable Kit",
-    category: "Instruments",
-    sub: "Single-use precision tools",
+    slug: "tracloser-retractable",
+    name: "TraCloser Retractable",
+    category: "Traction & Closure Device",
+    sub: "Dual-function gripper for traction and endoscopic closure",
     desc: {
-      ko: "(더미) 일회용 정밀 기구 세트로 교차 감염 위험을 최소화하고 일관된 시술 품질을 보장합니다.",
-      en: "(dummy) Single-use precision instrument kit minimizing cross-contamination and ensuring consistent procedural quality.",
+      ko: "(실제 데이터 미입력) TraCloser Retractable은 견인과 봉합 기능을 하나의 디바이스에 통합한 내시경 수술 보조 기구입니다.",
+      en: "TraCloser Retractable is a dual-function robotic gripper designed to combine tissue traction and defect closure in a single endoscopic device.",
     },
     specs: [
-      { k: "Tool Variants", v: "12 types" },
-      { k: "Sterilization", v: "EO-Sterilized" },
-      { k: "Shelf Life", v: "3 years" },
-      { k: "Compatibility", v: "R1 / R2 platform" },
+      { k: "Function", v: "Traction + Closure" },
+      { k: "Retractable", v: "Yes" },
+      { k: "Compatibility", v: "Standard Endoscope" },
+      { k: "Use Type", v: "(실제 데이터 미입력)" },
     ],
-    clinical: { cases: "5,000+", success: "99.1%", time: "—", hospitals: "30+" },
+    clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     videos: [
-      { id: "kit-unbox", title: "Unboxing & Setup", src: "" },
-      { id: "kit-usage", title: "Clinical Usage", src: "" },
-      { id: "kit-variants", title: "Tool Variants", src: "" },
+      { id: "tracloser-overview", title: "Overview", src: "" },
+      { id: "tracloser-demo", title: "Traction & Closure Demo", src: "" },
     ],
     highlights: [
-      "(dummy) 12 purpose-built disposable instruments",
-      "(dummy) EO-sterilized, individually packaged",
-      "(dummy) 3-year shelf life",
-      "(dummy) Compatible with R1 and R2 platforms",
+      "Dual-function: traction + closure in one device",
+      "Retractable design — deploy only when needed",
+      "(실제 데이터 미입력) 추가 특징 입력 대기",
     ],
-    papers: [
-      {
-        id: "kit-p1",
-        title: "Single-use disposable instruments in flexible robotic endoscopy: infection control and workflow outcomes",
-        authors: "Nguyen TH, O'Brien M, Santos P, et al.",
-        journal: "American Journal of Infection Control",
-        year: 2025,
-        type: "Multicenter Observational",
-        abstract: "(dummy) Analysis across 30 hospitals showed zero device-attributed cross-contamination events over 5,000+ procedures, compared to baseline rates of 0.4% with reusable instruments.",
-        doi: "10.xxxx/ajic.2025.0330",
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: "EndoVision AI",
-    category: "Imaging & AI Module",
-    sub: "Real-time diagnostic assist",
-    desc: {
-      ko: "(더미) 실시간 영상 분석 AI 모듈이 병변 탐지와 진단을 보조하여 시술의 정확도와 안전성을 향상시킵니다.",
-      en: "(dummy) Real-time image analysis AI module assists lesion detection and diagnosis, enhancing procedural accuracy and safety.",
-    },
-    specs: [
-      { k: "Detection Sensitivity", v: "96.8%" },
-      { k: "Inference Latency", v: "< 30 ms" },
-      { k: "Supported Lesions", v: "8 types" },
-      { k: "Integration", v: "DICOM / HL7" },
-    ],
-    clinical: { cases: "2,300+", success: "—", time: "-18%", hospitals: "8" },
-    videos: [
-      { id: "ai-detect", title: "Lesion Detection Demo", src: "" },
-      { id: "ai-analysis", title: "Real-time Analysis", src: "" },
-      { id: "ai-integration", title: "System Integration", src: "" },
-    ],
-    highlights: [
-      "(dummy) 96.8% sensitivity for 8 lesion types in real-time",
-      "(dummy) <30ms inference latency enables seamless workflow",
-      "(dummy) Native DICOM / HL7 integration",
-      "(dummy) FDA-cleared deep learning model",
-    ],
-    papers: [
-      {
-        id: "ai-p1",
-        title: "Real-time AI-assisted lesion detection during flexible endoscopy: a prospective multicenter study",
-        authors: "Zhang W, Kumar R, Schmidt F, et al.",
-        journal: "Lancet Digital Health",
-        year: 2025,
-        type: "Prospective Multicenter",
-        abstract: "(dummy) Prospective study across 8 centers (n=2,340 procedures) demonstrated an 18% increase in adenoma detection rate with AI assistance vs standard endoscopy (p<0.001), without meaningful change in procedure time.",
-        doi: "10.xxxx/lanhl.2025.0014",
-      },
-      {
-        id: "ai-p2",
-        title: "Validation of an AI-driven diagnostic module across diverse patient populations",
-        authors: "Okonkwo C, Abdi S, Martinez L, et al.",
-        journal: "Nature Medicine",
-        year: 2024,
-        type: "Validation Study",
-        abstract: "(dummy) Cross-population validation (n=1,800) in 4 countries confirmed consistent sensitivity (95-97%) and specificity (92-94%) across demographic subgroups.",
-        doi: "10.xxxx/nm.2024.2277",
-      },
-    ],
+    papers: [],
   },
 ];
 
