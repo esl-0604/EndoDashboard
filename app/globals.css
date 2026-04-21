@@ -1108,30 +1108,59 @@ img.brochure-image {
   border-radius: 999px;
 }
 
-/* Papers grouped by component */
-.papers-group-block { margin-bottom: 20px; }
+/* Papers grouped by component — each group is a distinct card */
+.papers-group-block {
+  position: relative;
+  padding: 22px 24px 24px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(10,35,70,0.04);
+}
 .papers-group-block:last-child { margin-bottom: 0; }
+.papers-group-block::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 22px; bottom: 22px;
+  width: 5px;
+  background: linear-gradient(180deg, var(--accent), #6366f1);
+  border-radius: 0 4px 4px 0;
+}
 .papers-component-label {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 18px; font-weight: 800;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 22px; font-weight: 900;
   color: var(--text);
-  margin-bottom: 12px;
-  letter-spacing: -0.2px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 2px dashed var(--border);
+  letter-spacing: -0.4px;
 }
 .papers-component-tag {
-  font-size: 11px; font-weight: 800; letter-spacing: 1.8px;
+  font-size: 11px; font-weight: 800; letter-spacing: 2px;
   color: #fff;
   background: linear-gradient(135deg, var(--accent), #6366f1);
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 999px;
+  box-shadow: 0 3px 10px rgba(2,132,199,0.3);
 }
 .papers-count {
   margin-left: auto;
-  font-size: 13px; font-weight: 700;
-  color: var(--text-dim);
-  background: var(--panel-2);
-  padding: 4px 12px;
+  font-size: 14px; font-weight: 800;
+  color: var(--accent);
+  background: var(--panel);
+  border: 1px solid rgba(2,132,199,0.25);
+  padding: 5px 14px;
   border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+.papers-count::before {
+  content: "📄 ";
+  margin-right: 4px;
+}
+/* Paper items inside group use white contrast against group panel-2 background */
+.papers-group-block .paper-item {
+  background: var(--panel);
 }
 
 /* Paper clinical data (in expanded detail) */
