@@ -444,11 +444,11 @@ img.brochure-image {
 .back-arrow { font-size: 20px; }
 
 .panel-cat {
-  font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+  font-size: 14px; font-weight: 700; letter-spacing: 1.8px;
   color: var(--accent); text-transform: uppercase;
 }
 .panel-title {
-  font-size: 30px; font-weight: 800; margin: 4px 0 0;
+  font-size: 34px; font-weight: 800; margin: 6px 0 0;
   color: var(--text);
 }
 
@@ -464,32 +464,33 @@ img.brochure-image {
 }
 .panel-intro { display: flex; flex-direction: column; }
 .panel-desc {
-  font-size: 16px; line-height: 1.6;
+  font-size: 18px; line-height: 1.65;
   color: var(--text-dim);
-  margin: 0 0 22px;
+  margin: 0 0 24px;
 }
 .spec-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
 }
 .spec-item {
-  padding: 14px 16px;
+  padding: 16px 20px;
   background: var(--panel-2);
   border-radius: 12px;
   border-left: 3px solid var(--accent);
 }
-.spec-key { font-size: 11px; color: var(--text-dim); letter-spacing: 0.5px; text-transform: uppercase; }
-.spec-val { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 4px; }
+.spec-key { font-size: 13px; color: var(--text-dim); letter-spacing: 0.6px; text-transform: uppercase; }
+.spec-val { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 6px; }
 
 .panel-h3 {
-  font-size: 20px; font-weight: 700;
-  margin: 0 0 16px;
+  font-size: 24px; font-weight: 800;
+  margin: 0 0 20px;
   color: var(--text);
+  letter-spacing: -0.3px;
 }
-.panel-h3.sm { font-size: 16px; margin-bottom: 12px; }
+.panel-h3.sm { font-size: 18px; margin-bottom: 14px; }
 .panel-h3::before {
   content: ""; display: inline-block;
-  width: 4px; height: 18px; background: var(--accent);
-  border-radius: 2px; vertical-align: -3px; margin-right: 10px;
+  width: 5px; height: 22px; background: var(--accent);
+  border-radius: 2px; vertical-align: -4px; margin-right: 12px;
 }
 
 .related-videos {
@@ -531,7 +532,7 @@ img.brochure-image {
   background: var(--accent);
 }
 .video-label {
-  font-size: 13px; font-weight: 600;
+  font-size: 15px; font-weight: 600;
   color: var(--text);
   opacity: 0.85;
 }
@@ -619,20 +620,22 @@ img.brochure-image {
   text-align: center;
 }
 .clinical-num {
-  font-size: 32px; font-weight: 800; color: var(--text);
-  letter-spacing: -0.5px; line-height: 1;
+  font-size: 40px; font-weight: 800; color: var(--text);
+  letter-spacing: -0.6px; line-height: 1;
 }
-.clinical-lbl { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+.clinical-lbl { font-size: 14px; color: var(--text-dim); margin-top: 10px; }
 
 .clinical-chart { min-height: 220px; margin-bottom: 16px; }
 .clinical-list { list-style: none; padding: 0; margin: 0; }
 .clinical-list li {
-  padding: 12px 16px;
+  padding: 14px 20px;
   background: var(--panel-2);
   border-radius: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: var(--text-dim);
   border-left: 3px solid var(--accent);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 /* ---------- Brochure section (panel top) ---------- */
@@ -650,20 +653,20 @@ img.brochure-image {
 }
 .brochure-text { padding: 4px 0; }
 .brochure-cat {
-  font-size: 12px; font-weight: 800; letter-spacing: 2px;
+  font-size: 14px; font-weight: 800; letter-spacing: 2.2px;
   color: var(--accent); text-transform: uppercase;
 }
 .brochure-heading {
-  font-size: 26px; font-weight: 800;
-  margin: 8px 0 16px;
+  font-size: 30px; font-weight: 800;
+  margin: 10px 0 18px;
   color: var(--text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   line-height: 1.25;
 }
 .brochure-desc {
-  font-size: 16px; line-height: 1.65;
+  font-size: 18px; line-height: 1.65;
   color: var(--text);
-  margin: 0 0 20px;
+  margin: 0 0 22px;
 }
 .brochure-highlights {
   list-style: none; padding: 0;
@@ -672,10 +675,10 @@ img.brochure-image {
 }
 .brochure-highlights li {
   position: relative;
-  padding: 10px 14px 10px 38px;
+  padding: 12px 16px 12px 44px;
   background: var(--panel-2);
   border-radius: 12px;
-  font-size: 14px; line-height: 1.5;
+  font-size: 16px; line-height: 1.55;
   color: var(--text);
 }
 .brochure-highlights li::before {
@@ -683,11 +686,11 @@ img.brochure-image {
   position: absolute;
   left: 12px; top: 50%;
   transform: translateY(-50%);
-  width: 20px; height: 20px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
-  font-size: 11px; font-weight: 800;
+  font-size: 13px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
 }
 .brochure-specs {
@@ -704,23 +707,23 @@ img.brochure-image {
   border-radius: 10px;
 }
 .brochure-spec-key {
-  font-size: 10px; color: var(--text-dim);
-  text-transform: uppercase; letter-spacing: 0.8px;
+  font-size: 12px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 1px;
 }
 .brochure-spec-val {
-  font-size: 17px; font-weight: 700; color: var(--text);
-  margin-top: 3px;
+  font-size: 19px; font-weight: 700; color: var(--text);
+  margin-top: 4px;
 }
 
 /* ---------- Components section ---------- */
 .components-group { margin-bottom: 24px; }
 .components-group:last-child { margin-bottom: 0; }
 .components-group-label {
-  font-size: 11px; font-weight: 800; letter-spacing: 2px;
+  font-size: 13px; font-weight: 800; letter-spacing: 2.2px;
   color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 12px;
 }
 .components-group-label::after {
   content: "";
@@ -754,15 +757,15 @@ img.brochure-image {
 }
 .component-body { display: flex; flex-direction: column; min-width: 0; }
 .component-name {
-  font-size: 16px; font-weight: 800;
+  font-size: 20px; font-weight: 800;
   color: var(--text);
-  letter-spacing: -0.2px;
-  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
 }
 .component-desc {
-  font-size: 13px; line-height: 1.5;
+  font-size: 15px; line-height: 1.55;
   color: var(--text-dim);
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 .component-specs {
   display: flex; flex-direction: column; gap: 4px;
@@ -770,37 +773,38 @@ img.brochure-image {
 }
 .component-spec {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 6px 10px;
+  padding: 8px 14px;
   background: var(--panel-2);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .component-spec-key {
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
 }
 .component-spec-val {
   color: var(--text);
   font-weight: 700;
+  font-size: 15px;
 }
 
 /* ---------- Clinical / Papers ---------- */
 .clinical-summary-label {
-  font-size: 11px; font-weight: 800; letter-spacing: 2px;
+  font-size: 13px; font-weight: 800; letter-spacing: 2.2px;
   color: var(--text-dim);
   text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.papers-block { margin-top: 32px; }
-.papers-header {
-  display: flex; align-items: baseline; justify-content: space-between;
   margin-bottom: 12px;
 }
+.papers-block { margin-top: 36px; }
+.papers-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+}
 .papers-hint {
-  font-size: 12px; color: var(--text-dim);
+  font-size: 14px; color: var(--text-dim);
 }
 .papers-list {
   display: flex; flex-direction: column; gap: 10px;
@@ -826,29 +830,29 @@ img.brochure-image {
 .paper-row:hover { background: var(--panel-2); }
 .paper-row-main { flex: 1; min-width: 0; }
 .paper-title {
-  font-size: 15px; font-weight: 700;
+  font-size: 18px; font-weight: 700;
   color: var(--text);
   line-height: 1.4;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .paper-meta {
-  font-size: 12px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  font-size: 14px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .paper-journal { font-weight: 700; color: var(--accent); font-style: italic; }
 .paper-type {
-  padding: 2px 8px;
+  padding: 3px 10px;
   background: rgba(2,132,199,0.08);
   color: var(--accent);
   border-radius: 999px;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.3px;
 }
 .paper-dot { opacity: 0.4; }
 .paper-authors {
-  font-size: 12px; color: var(--text-dim);
-  margin-top: 4px;
+  font-size: 14px; color: var(--text-dim);
+  margin-top: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -862,7 +866,7 @@ img.brochure-image {
 .paper-item.open .paper-chevron { color: var(--accent); }
 
 .paper-detail {
-  padding: 4px 22px 22px;
+  padding: 4px 26px 26px;
   border-top: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(2,132,199,0.03), transparent);
   animation: paperOpen 0.3s ease;
@@ -871,85 +875,85 @@ img.brochure-image {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.paper-detail-section { margin-top: 16px; }
+.paper-detail-section { margin-top: 20px; }
 .paper-detail-label {
-  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  font-size: 12px; font-weight: 800; letter-spacing: 1.8px;
   color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .paper-detail-val {
-  font-size: 14px; color: var(--text);
+  font-size: 15px; color: var(--text);
   line-height: 1.5;
 }
 .paper-abstract {
-  font-size: 14px; line-height: 1.6;
+  font-size: 16px; line-height: 1.65;
   color: var(--text);
   margin: 0;
-  padding: 14px 16px;
+  padding: 18px 20px;
   background: var(--panel-2);
-  border-radius: 10px;
-  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
 }
 .paper-detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-top: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
 }
-.paper-doi { font-family: monospace; font-size: 12px; color: var(--accent); }
+.paper-doi { font-family: monospace; font-size: 14px; color: var(--accent); }
 
 /* Papers grouped by component */
 .papers-group-block { margin-bottom: 20px; }
 .papers-group-block:last-child { margin-bottom: 0; }
 .papers-component-label {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 18px; font-weight: 800;
   color: var(--text);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   letter-spacing: -0.2px;
 }
 .papers-component-tag {
-  font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+  font-size: 11px; font-weight: 800; letter-spacing: 1.8px;
   color: #fff;
   background: linear-gradient(135deg, var(--accent), #6366f1);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
 }
 .papers-count {
   margin-left: auto;
-  font-size: 11px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
   color: var(--text-dim);
   background: var(--panel-2);
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
 }
 
 /* Paper clinical data (in expanded detail) */
 .paper-clinical {
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; gap: 8px;
   background: linear-gradient(135deg, rgba(2,132,199,0.06), rgba(99,102,241,0.04));
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 16px 20px;
+  border-radius: 12px;
   border: 1px solid rgba(2,132,199,0.15);
 }
 .paper-clinical-row {
   display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 12px;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
   align-items: start;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px dashed rgba(10, 35, 70, 0.08);
 }
 .paper-clinical-row:last-child { border-bottom: none; }
 .paper-clinical-k {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.6px;
   color: var(--text-dim);
   text-transform: uppercase;
 }
 .paper-clinical-v {
-  font-size: 13px; color: var(--text);
-  line-height: 1.4;
+  font-size: 16px; color: var(--text);
+  line-height: 1.5;
   font-weight: 600;
 }
 
@@ -961,10 +965,10 @@ img.brochure-image {
   border-top: 1px solid var(--border);
 }
 .paper-action-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-size: 13px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 15px; font-weight: 700;
   text-decoration: none;
   background: var(--panel-2);
   color: var(--text);
