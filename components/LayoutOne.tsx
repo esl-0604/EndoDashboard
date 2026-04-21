@@ -16,6 +16,19 @@ export default function LayoutOne({
   const [slideIdx, setSlideIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [expandedPaper, setExpandedPaper] = useState<string | null>(null);
+  const [activeProductVideo, setActiveProductVideo] = useState<VideoItem | null>(null);
+
+  const selectProduct = (id: number) => {
+    setSelectedId(id);
+    setExpandedPaper(null);
+    const p = PRODUCTS.find((x) => x.id === id);
+    setActiveProductVideo(p?.videos[0] ?? null);
+  };
+  const closeProduct = () => {
+    setSelectedId(null);
+    setExpandedPaper(null);
+    setActiveProductVideo(null);
+  };
 
   const t = (k: string) => TR[lang][k] ?? k;
   const product = PRODUCTS.find((p) => p.id === selectedId);
@@ -42,10 +55,10 @@ export default function LayoutOne({
     <div className={`showcase ${isDetail ? "detail" : ""}`}>
       <section className="video-stage">
         {isDetail && product ? (
-          product.videos[0]?.src ? (
+          activeProductVideo?.src ? (
             <video
-              key={product.id}
-              src={product.videos[0].src}
+              key={activeProductVideo.id}
+              src={activeProductVideo.src}
               autoPlay
               loop
               muted
@@ -55,7 +68,8 @@ export default function LayoutOne({
           ) : (
             <div className="slide placeholder-media active product-loop">
               <span className="ph-label">
-                ▶ [ {product.name} — Product Video Loop ]
+                ▶ [ {product.name} —{" "}
+                {activeProductVideo?.title ?? "Product Video Loop"} ]
               </span>
             </div>
           )
@@ -80,7 +94,13 @@ export default function LayoutOne({
           {isDetail && product ? (
             <div className="slide-caption">
               <h2>{product.name}</h2>
-              <p>{product.sub}</p>
+              {activeProductVideo && (
+                <div className="now-playing-inline">
+                  <span className="np-dot" />
+                  <span className="np-label">NOW PLAYING</span>
+                  <span className="np-title">{activeProductVideo.title}</span>
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -114,7 +134,7 @@ export default function LayoutOne({
       <aside className="product-rail">
         <div className="rail-header">
           {isDetail ? (
-            <button className="back-btn rail-back" onClick={() => { setSelectedId(null); setExpandedPaper(null); }}>
+            <button className="back-btn rail-back" onClick={closeProduct}>
               <span className="back-arrow">←</span>
               <span>{t("panel.back")}</span>
             </button>
@@ -130,7 +150,7 @@ export default function LayoutOne({
             <button
               key={p.id}
               className={`rail-tile ${selectedId === p.id ? "selected" : ""}`}
-              onClick={() => { setSelectedId(p.id); setExpandedPaper(null); }}
+              onClick={() => selectProduct(p.id)}
             >
               {p.thumbnail ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -260,18 +280,35 @@ export default function LayoutOne({
               <section className="panel-section">
                 <h3 className="panel-h3">{t("panel.videos")}</h3>
                 <div className="related-videos">
-                  {product.videos.map((v) => (
-                    <button
-                      key={v.id}
-                      className="video-thumb-btn"
-                      onClick={() => onVideoClick(v)}
-                    >
-                      <div className="placeholder-media video-thumb">
-                        <div className="play-icon">▶</div>
-                        <div className="video-label">{v.title}</div>
-                      </div>
-                    </button>
-                  ))}
+                  {product.videos.map((v) => {
+                    const isPlaying = activeProductVideo?.id === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        className={`video-thumb-btn ${isPlaying ? "playing" : ""}`}
+                        onClick={() => setActiveProductVideo(v)}
+                      >
+                        <div className="placeholder-media video-thumb">
+                          {isPlaying && (
+                            <div className="now-playing-badge">
+                              <span className="np-dot" />
+                              NOW PLAYING
+                            </div>
+                          )}
+                          <div className="play-icon">
+                            {isPlaying ? (
+                              <span className="eq-bars" aria-hidden>
+                                <span /><span /><span /><span />
+                              </span>
+                            ) : (
+                              "▶"
+                            )}
+                          </div>
+                          <div className="video-label">{v.title}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
 
