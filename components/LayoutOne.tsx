@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PRODUCTS, SLIDES, TR, type Lang, type VideoItem } from "@/lib/products";
+import { PRODUCTS, SLIDES, TR, type Lang, type Paper, type VideoItem } from "@/lib/products";
 
 const SLIDE_DURATION = 7000;
 
@@ -267,85 +267,170 @@ export default function LayoutOne({
                   </div>
                 </div>
 
-                {product.papers && product.papers.length > 0 && (
-                  <div className="papers-block">
-                    <div className="papers-header">
-                      <div className="clinical-summary-label">{t("panel.papers")}</div>
-                      <div className="papers-hint">{t("papers.hint")}</div>
-                    </div>
-                    <div className="papers-list">
-                      {product.papers.map((p) => {
-                        const open = expandedPaper === p.id;
-                        return (
-                          <div key={p.id} className={`paper-item ${open ? "open" : ""}`}>
-                            <button
-                              className="paper-row"
-                              onClick={() =>
-                                setExpandedPaper(open ? null : p.id)
-                              }
-                              aria-expanded={open}
-                            >
-                              <div className="paper-row-main">
-                                <div className="paper-title">{p.title}</div>
-                                <div className="paper-meta">
-                                  <span className="paper-journal">{p.journal}</span>
-                                  <span className="paper-dot">·</span>
-                                  <span>{p.year}</span>
-                                  {p.type && (
-                                    <>
-                                      <span className="paper-dot">·</span>
-                                      <span className="paper-type">{p.type}</span>
-                                    </>
+                {(() => {
+                  const paperGroups: { label: string | null; papers: Paper[] }[] = [];
+                  if (product.papers && product.papers.length > 0) {
+                    paperGroups.push({ label: null, papers: product.papers });
+                  }
+                  if (product.components) {
+                    for (const c of product.components) {
+                      if (c.papers && c.papers.length > 0) {
+                        paperGroups.push({ label: c.name, papers: c.papers });
+                      }
+                    }
+                  }
+                  if (paperGroups.length === 0) return null;
+
+                  const renderClinical = (c: Paper["clinical"]) => {
+                    if (!c) return null;
+                    const rows: { k: string; v: string }[] = [];
+                    if (c.patients) rows.push({ k: "Patients / Cases", v: c.patients });
+                    if (c.enBloc) rows.push({ k: "En Bloc Resection", v: c.enBloc });
+                    if (c.r0) rows.push({ k: "R0 Resection", v: c.r0 });
+                    if (c.procedureTime) rows.push({ k: "Procedure Time", v: c.procedureTime });
+                    if (c.dissectionSpeed) rows.push({ k: "Dissection Speed", v: c.dissectionSpeed });
+                    if (c.complications) rows.push({ k: "Complications", v: c.complications });
+                    if (c.notes) rows.push({ k: "Notes", v: c.notes });
+                    if (rows.length === 0) return null;
+                    return (
+                      <div className="paper-detail-section">
+                        <div className="paper-detail-label">Clinical Data</div>
+                        <div className="paper-clinical">
+                          {rows.map((r) => (
+                            <div key={r.k} className="paper-clinical-row">
+                              <div className="paper-clinical-k">{r.k}</div>
+                              <div className="paper-clinical-v">{r.v}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  };
+
+                  return (
+                    <div className="papers-block">
+                      <div className="papers-header">
+                        <div className="clinical-summary-label">{t("panel.papers")}</div>
+                        <div className="papers-hint">{t("papers.hint")}</div>
+                      </div>
+                      {paperGroups.map((grp) => (
+                        <div
+                          key={grp.label ?? "_general"}
+                          className="papers-group-block"
+                        >
+                          {grp.label && (
+                            <div className="papers-component-label">
+                              <span className="papers-component-tag">COMPONENT</span>
+                              {grp.label}
+                              <span className="papers-count">{grp.papers.length}</span>
+                            </div>
+                          )}
+                          <div className="papers-list">
+                            {grp.papers.map((p) => {
+                              const open = expandedPaper === p.id;
+                              return (
+                                <div
+                                  key={p.id}
+                                  className={`paper-item ${open ? "open" : ""}`}
+                                >
+                                  <button
+                                    className="paper-row"
+                                    onClick={() =>
+                                      setExpandedPaper(open ? null : p.id)
+                                    }
+                                    aria-expanded={open}
+                                  >
+                                    <div className="paper-row-main">
+                                      <div className="paper-title">{p.title}</div>
+                                      <div className="paper-meta">
+                                        <span className="paper-journal">
+                                          {p.journal}
+                                        </span>
+                                        <span className="paper-dot">·</span>
+                                        <span>{p.year}</span>
+                                        {p.type && (
+                                          <>
+                                            <span className="paper-dot">·</span>
+                                            <span className="paper-type">{p.type}</span>
+                                          </>
+                                        )}
+                                      </div>
+                                      <div className="paper-authors">{p.authors}</div>
+                                    </div>
+                                    <div className="paper-chevron" aria-hidden>
+                                      {open ? "▲" : "▼"}
+                                    </div>
+                                  </button>
+                                  {open && (
+                                    <div className="paper-detail">
+                                      <div className="paper-detail-section">
+                                        <div className="paper-detail-label">
+                                          {t("paper.abstract")}
+                                        </div>
+                                        <p className="paper-abstract">{p.abstract}</p>
+                                      </div>
+                                      {renderClinical(p.clinical)}
+                                      <div className="paper-detail-grid">
+                                        <div>
+                                          <div className="paper-detail-label">
+                                            {t("paper.authors")}
+                                          </div>
+                                          <div className="paper-detail-val">
+                                            {p.authors}
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <div className="paper-detail-label">
+                                            {t("paper.journal")}
+                                          </div>
+                                          <div className="paper-detail-val">
+                                            {p.journal}, {p.year}
+                                          </div>
+                                        </div>
+                                        {p.doi && (
+                                          <div>
+                                            <div className="paper-detail-label">
+                                              {t("paper.doi")}
+                                            </div>
+                                            <div className="paper-detail-val paper-doi">
+                                              {p.doi}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="paper-actions">
+                                        {p.pdf && (
+                                          <a
+                                            href={p.pdf}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="paper-action-btn primary"
+                                          >
+                                            📄 View PDF
+                                          </a>
+                                        )}
+                                        {p.url && (
+                                          <a
+                                            href={p.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="paper-action-btn"
+                                          >
+                                            🔗 Publisher Link
+                                          </a>
+                                        )}
+                                      </div>
+                                    </div>
                                   )}
                                 </div>
-                                <div className="paper-authors">{p.authors}</div>
-                              </div>
-                              <div className="paper-chevron" aria-hidden>
-                                {open ? "▲" : "▼"}
-                              </div>
-                            </button>
-                            {open && (
-                              <div className="paper-detail">
-                                <div className="paper-detail-section">
-                                  <div className="paper-detail-label">
-                                    {t("paper.abstract")}
-                                  </div>
-                                  <p className="paper-abstract">{p.abstract}</p>
-                                </div>
-                                <div className="paper-detail-grid">
-                                  <div>
-                                    <div className="paper-detail-label">
-                                      {t("paper.authors")}
-                                    </div>
-                                    <div className="paper-detail-val">{p.authors}</div>
-                                  </div>
-                                  <div>
-                                    <div className="paper-detail-label">
-                                      {t("paper.journal")}
-                                    </div>
-                                    <div className="paper-detail-val">
-                                      {p.journal}, {p.year}
-                                    </div>
-                                  </div>
-                                  {p.doi && (
-                                    <div>
-                                      <div className="paper-detail-label">
-                                        {t("paper.doi")}
-                                      </div>
-                                      <div className="paper-detail-val paper-doi">
-                                        {p.doi}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
+                              );
+                            })}
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </section>
             </div>
           </>
