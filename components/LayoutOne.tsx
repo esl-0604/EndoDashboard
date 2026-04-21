@@ -369,6 +369,28 @@ export default function LayoutOne({
                                     aria-expanded={open}
                                   >
                                     <div className="paper-row-main">
+                                      <div className="paper-title">{p.title}</div>
+                                      <div className="paper-meta">
+                                        <span className="paper-journal">
+                                          {p.journal}
+                                        </span>
+                                        <span className="paper-dot">·</span>
+                                        <span>{p.year}</span>
+                                        {p.type && (
+                                          <>
+                                            <span className="paper-dot">·</span>
+                                            <span className="paper-type">{p.type}</span>
+                                          </>
+                                        )}
+                                      </div>
+                                      <div className="paper-authors">{p.authors}</div>
+                                    </div>
+                                    <div className="paper-chevron" aria-hidden>
+                                      {open ? "▲" : "▼"}
+                                    </div>
+                                  </button>
+                                  {open && (
+                                    <div className="paper-detail">
                                       {p.highlight && (
                                         <div className="paper-hero">
                                           <div className="paper-hero-big">
@@ -386,28 +408,6 @@ export default function LayoutOne({
                                           </div>
                                         </div>
                                       )}
-                                      <div className="paper-meta">
-                                        <span className="paper-journal">
-                                          {p.journal}
-                                        </span>
-                                        <span className="paper-dot">·</span>
-                                        <span>{p.year}</span>
-                                        {p.type && (
-                                          <>
-                                            <span className="paper-dot">·</span>
-                                            <span className="paper-type">{p.type}</span>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div className="paper-title">{p.title}</div>
-                                      <div className="paper-authors">{p.authors}</div>
-                                    </div>
-                                    <div className="paper-chevron" aria-hidden>
-                                      {open ? "▲" : "▼"}
-                                    </div>
-                                  </button>
-                                  {open && (
-                                    <div className="paper-detail">
                                       {p.keyClaims && p.keyClaims.length > 0 && (
                                         <div className="paper-detail-section">
                                           <div className="paper-detail-label">
