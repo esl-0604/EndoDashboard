@@ -64,6 +64,7 @@ export default function LayoutOne({
   useEffect(() => setPortalReady(true), []);
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
   const stageVideoRef = useRef<HTMLVideoElement | null>(null);
+  const panelBodyRef = useRef<HTMLDivElement | null>(null);
   const closingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heroVideo = HERO_VIDEOS[heroIdx] ?? HERO_VIDEOS[0];
 
@@ -159,6 +160,15 @@ export default function LayoutOne({
   useEffect(() => {
     setStageProgress(0);
   }, [activeProductVideo?.id]);
+
+  // Whenever a different product is selected, snap the detail panel back to
+  // the top — otherwise the new product would open mid-scroll at whatever
+  // position the previous product was scrolled to.
+  useEffect(() => {
+    if (selectedId !== null && panelBodyRef.current) {
+      panelBodyRef.current.scrollTop = 0;
+    }
+  }, [selectedId]);
 
   const onStageTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const v = e.currentTarget;
@@ -442,7 +452,7 @@ export default function LayoutOne({
       <section className="product-panel" aria-hidden={!isDetail}>
         {product && (
           <>
-            <div className="panel-body">
+            <div className="panel-body" ref={panelBodyRef}>
               {/* Section 1: Overview — image + text description */}
               <section className="panel-section brochure">
                 <div className="panel-section-head">
