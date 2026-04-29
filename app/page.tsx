@@ -7,9 +7,32 @@ import LayoutOne from "@/components/LayoutOne";
 
 const IDLE_DELAY = 90_000;
 
+const REF_W = 3840;
+const REF_H = 2160;
+
 export default function Home() {
   const lang: Lang = "en";
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
+
+  // Recompute the scale that fits the 3840×2160 reference layout into the
+  // current viewport, expose it to CSS as --app-scale on <html>. Pure CSS
+  // min(calc(...)) works in theory but has had subtle cross-browser quirks
+  // when combined with transform-scale; the JS path is the reliable form.
+  useEffect(() => {
+    const update = () => {
+      const sx = window.innerWidth / REF_W;
+      const sy = window.innerHeight / REF_H;
+      const s = Math.min(sx, sy);
+      document.documentElement.style.setProperty("--app-scale", String(s));
+    };
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
 
   // Idle reset (reload page to return to defaults)
   const idleRef = useRef<number | null>(null);

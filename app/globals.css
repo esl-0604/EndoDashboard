@@ -28,33 +28,39 @@ html, body {
   overflow: hidden;
   overscroll-behavior: none;
 }
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; }
 
 /* ---------- Main app container ----------
    The interior layout is authored against a fixed 3840×2160 (4K) reference
    so the kiosk display gets a pixel-perfect 1:1 view. For any other viewport
-   size, the entire app is uniformly scaled via transform so the proportions
-   stay exact. transform-origin is "center" (combined with body's flex
-   centering) so the app sits centered with letterboxing on the gradient
-   background when the viewport aspect doesn't match 16:9.
+   size, app/page.tsx computes --app-scale = min(innerW/3840, innerH/2160)
+   on every resize and we apply it via transform so the proportions stay
+   exact. The fallback `1` keeps the page sane during SSR / initial paint
+   before the JS scale is applied.
 
-   At exactly 3840×2160 the scale resolves to 1 — no transform applied.
+   transform-origin: center combined with body's flex centering keeps the
+   scaled .app visually centered with gradient letterboxing where the
+   viewport aspect doesn't match 16:9.
 */
+:root {
+  /* CSS-only fallback used during SSR / initial paint before app/page.tsx
+     installs an explicit numeric --app-scale on resize. */
+  --app-scale: min(calc(100vw / 3840), calc(100vh / 2160));
+}
 .app {
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   width: 3840px;
   height: 2160px;
-  flex: none;
   padding: 24px 28px;
   overflow: hidden;
-  transform: scale(min(calc(100vw / 3840), calc(100vh / 2160)));
-  transform-origin: center;
+  /* translate(-50%, -50%) anchors the *unscaled* center of the .app box at
+     the viewport center, then scale down. This produces a perfectly
+     centered, proportionally-scaled view at any viewport size. */
+  transform: translate(-50%, -50%) scale(var(--app-scale));
+  transform-origin: center center;
 }
 
 /* ---------- Layout toggle (floating, top-left) ---------- */
