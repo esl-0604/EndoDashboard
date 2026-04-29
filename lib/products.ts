@@ -9,7 +9,7 @@ export const HERO_VIDEOS: HeroVideo[] = [
   {
     id: "all-products",
     title: "EndoRobotics Lineup",
-    src: "/assets/slides/EndoRobotics_All_Product.mp4",
+    src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/slides/EndoRobotics_All_Product.mp4",
   },
 ];
 
@@ -168,25 +168,25 @@ export const PRODUCTS: Product[] = [
       {
         id: "robopera-motion-overview",
         title: "Motions Overview",
-        src: "/assets/products/robopera/videos/01-motion-overview.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/robopera/videos/01-motion-overview.mp4",
         poster: "/assets/products/robopera/videos/01-motion-overview.jpg",
       },
       {
         id: "robopera-basic-procedure",
         title: "Basic Gripper · Clinical Case",
-        src: "/assets/products/robopera/videos/02-basic-motion-procedure.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/robopera/videos/02-basic-motion-procedure.mp4",
         poster: "/assets/products/robopera/videos/02-basic-motion-procedure.jpg",
       },
       {
         id: "robopera-dual-procedure",
         title: "Dual Gripper · Clinical Case",
-        src: "/assets/products/robopera/videos/03-dual-motion-procedure.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/robopera/videos/03-dual-motion-procedure.mp4",
         poster: "/assets/products/robopera/videos/03-dual-motion-procedure.jpg",
       },
       {
         id: "robopera-clinical-cases",
         title: "Full Clinical Case",
-        src: "/assets/products/robopera/videos/04-clinical-cases.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/robopera/videos/04-clinical-cases.mp4",
         poster: "/assets/products/robopera/videos/04-clinical-cases.jpg",
       },
     ],
@@ -609,13 +609,13 @@ export const PRODUCTS: Product[] = [
       {
         id: "endocubot-animation",
         title: "Animation Overview",
-        src: "/assets/products/endocubot/videos/01-animation-overview.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/endocubot/videos/01-animation-overview.mp4",
         poster: "/assets/products/endocubot/videos/01-animation-overview.jpg",
       },
       {
         id: "endocubot-live",
         title: "Live Demonstration",
-        src: "/assets/products/endocubot/videos/02-live-demonstration.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/endocubot/videos/02-live-demonstration.mp4",
         poster: "/assets/products/endocubot/videos/02-live-demonstration.jpg",
       },
     ],
@@ -718,13 +718,13 @@ export const PRODUCTS: Product[] = [
       {
         id: "tracloser-overview",
         title: "Animation Overview",
-        src: "/assets/products/tracloser-retractable/videos/01-overview.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/tracloser-retractable/videos/01-overview.mp4",
         poster: "/assets/products/tracloser-retractable/videos/01-overview.jpg",
       },
       {
         id: "tracloser-clinical-case",
         title: "Retractable - Clinical Case",
-        src: "/assets/products/tracloser-retractable/videos/02-gastric-esd-clinical.mp4",
+        src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/tracloser-retractable/videos/02-gastric-esd-clinical.mp4",
         poster: "/assets/products/tracloser-retractable/videos/02-gastric-esd-clinical.jpg",
       },
     ],
