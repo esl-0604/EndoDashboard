@@ -126,16 +126,17 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 
 /* ---------- Layout custom properties ---------- */
 :root {
-  --strip-h: 200px;       /* bottom rail strip height when in detail mode */
-  --panel-w: 44%;         /* detail panel width when in detail mode */
+  --strip-h: 340px;          /* INITIAL state: bottom rail strip height (3 large tiles fill the row) */
+  --strip-h-detail: 260px;   /* DETAIL state: compact (text-only, no image) */
+  --panel-w: 55%;            /* detail panel width (LEFT side, holds product description) */
 }
 
-/* Default state */
+/* Default state — video stage occupies the full width above the bottom strip */
 .video-stage {
   left: 0;
-  right: calc(var(--rail-w) + var(--gap));
+  right: 0;
   top: 0;
-  bottom: 0;
+  bottom: calc(var(--strip-h) + var(--gap));
   transition:
     top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
@@ -157,32 +158,97 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   object-fit: cover;
   background: #000;
 }
+/* Initial-screen hero video should show fully (no crop) — letterboxing is
+   covered by the dark stage background. Detail-mode product loops keep
+   `cover` to fill the right 40% slot. */
+.showcase:not(.detail) .stage-video {
+  object-fit: contain;
+}
+
+/* Instruction callout between hero video and bottom product rail (initial mode only).
+   Centered pill that straddles the gap so it reads as a visual handoff between
+   the video and the tile lineup. Hidden in detail mode. */
+.rail-instruction {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--strip-h) - 14px);
+  transform: translate(-50%, 50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 46px;
+  background: linear-gradient(135deg, rgba(11, 37, 69, 0.92) 0%, rgba(2, 132, 199, 0.92) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.32);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow:
+    0 12px 36px rgba(2, 132, 199, 0.45),
+    0 0 0 0 rgba(2, 132, 199, 0.5);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 6;
+  animation: railInstructionGlow 2.4s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+.rail-instruction-arrow {
+  font-size: 38px;
+  line-height: 1;
+  color: #fff;
+  animation: railInstructionBob 1.4s ease-in-out infinite;
+}
+@keyframes railInstructionBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+@keyframes railInstructionGlow {
+  0%, 100% {
+    box-shadow:
+      0 12px 36px rgba(2, 132, 199, 0.45),
+      0 0 0 0 rgba(2, 132, 199, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 16px 50px rgba(2, 132, 199, 0.65),
+      0 0 0 12px rgba(2, 132, 199, 0);
+  }
+}
+.showcase.detail .rail-instruction,
+.showcase.closing-detail .rail-instruction {
+  opacity: 0;
+}
 
 .product-rail {
-  width: var(--rail-w);
-  left: calc(100% - var(--rail-w));
-  top: 0;
+  /* Default: bottom strip, full width */
+  width: auto;
+  left: 0;
+  right: 0;
+  top: auto;
   bottom: 0;
-  height: auto;
-  right: auto;
+  height: var(--strip-h);
   transition:
     top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 5;
   background:
-    radial-gradient(140% 60% at 100% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-    linear-gradient(170deg, #ffffff 0%, #eef5fd 100%);
+    radial-gradient(140% 80% at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #eef5fd 100%);
   border: 3px solid transparent;
   background-origin: border-box;
   background-clip: padding-box;
   border-radius: 26px;
   box-shadow:
-    0 30px 70px rgba(2, 132, 199, 0.22),
+    0 -12px 50px rgba(2, 132, 199, 0.18),
     0 0 0 2px rgba(2, 132, 199, 0.12);
-  display: flex; flex-direction: column;
+  display: flex; flex-direction: row;
   overflow: hidden;
 }
 .product-rail::before {
@@ -219,8 +285,8 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 }
 
 .product-panel {
-  left: calc(100% - var(--panel-w));
-  right: 0;
+  left: 0;
+  right: calc(100% - var(--panel-w));
   top: 0;
   bottom: 0;
   transform: translateX(calc(100% + 80px));
@@ -230,89 +296,462 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 22px;
-  box-shadow: -10px 0 40px rgba(10, 35, 70, 0.08);
+  box-shadow: 10px 0 40px rgba(10, 35, 70, 0.08);
   display: flex; flex-direction: column;
   overflow: hidden;
   transition:
     top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s ease;
 }
 
+/* ========= Initial state (homepage) =========
+   Bottom strip with three equal-flex tiles spanning the full row.
+   Rail-header is hidden because the products themselves communicate the lineup. */
+.showcase:not(.detail) .rail-header {
+  display: none;
+}
+/* Rail tile layout — applies to BOTH initial and detail states so tiles
+   render identically. Only the header/back-button differs. */
+.product-rail .rail-list {
+  flex: 1;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  padding: 24px;
+  gap: 18px;
+  overflow: hidden;
+}
+.product-rail .rail-tile {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  flex-direction: row;
+  padding: 20px;
+  gap: 20px;
+  align-items: stretch;
+}
+.product-rail .rail-thumb {
+  flex: 0 0 42%;
+  width: 42%;
+  height: 100%;
+  align-self: stretch;
+  min-height: 0;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 22px;
+  box-shadow: inset 0 0 0 1px rgba(10, 35, 70, 0.06),
+              0 4px 14px rgba(10, 35, 70, 0.06);
+}
+.product-rail .rail-thumb-img {
+  object-fit: contain;
+  object-position: center;
+}
+.product-rail .rail-info {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 8px 6px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.showcase .rail-cat {
+  display: none;
+}
+.showcase .rail-name {
+  margin: 0;
+  font-size: 56px;
+  letter-spacing: -1px;
+  white-space: normal;
+}
+.showcase .rail-name .brand-logo {
+  height: 1.2em;
+}
+.showcase .rail-name .product-brand {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2em;
+  white-space: normal;
+}
+.showcase .rail-name .brand-suffix {
+  font-size: 0.7em;
+  line-height: 1.15;
+  white-space: normal;
+}
+.showcase .rail-sub {
+  font-size: 22px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.4;
+}
+
 /* ========= Detail mode ========= */
-/* Video stage: stays visible on the LEFT, shrinks to accommodate panel + strip */
+/* Video stage: snaps to RIGHT 45% slot, then slides in from offscreen right
+   (after the product panel finishes sliding in from the right). In detail
+   mode the stage is a flex column — Related Videos rail on top, active
+   player below. */
 .showcase.detail .video-stage {
-  right: calc(var(--panel-w) + var(--gap));
-  bottom: calc(var(--strip-h) + var(--gap));
-  opacity: 1;
+  left: calc(var(--panel-w) + var(--gap));
+  right: 0;
+  bottom: calc(var(--strip-h-detail) + var(--gap));
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  background: #0b2545;
+  animation: videoSlideInFromRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+/* Top bar: horizontal list of related-video thumbnails */
+.stage-related-bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  background: linear-gradient(180deg, rgba(2, 132, 199, 0.18) 0%, rgba(11, 37, 69, 0.6) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.stage-related-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+.stage-related-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+}
+.stage-related-thumb {
+  /* Fixed quarter-width so thumbs stay the same size regardless of count.
+     With 2 videos they occupy the left half; right side stays empty. */
+  flex: 0 0 calc((100% - 30px) / 4);
+  max-width: calc((100% - 30px) / 4);
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.2s, transform 0.15s;
+}
+.stage-related-thumb-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px),
+    linear-gradient(135deg, #0a2342 0%, #163964 100%);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.stage-related-thumb-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.stage-related-thumb-media::after {
+  /* Subtle dark overlay so the play icon stays legible on bright posters. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.45) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.stage-related-thumb .play-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+.stage-related-thumb .now-playing-badge {
+  z-index: 2;
+}
+.stage-related-thumb-label {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: hidden;
+}
+.stage-related-thumb:hover .stage-related-thumb-media {
+  border-color: rgba(2, 132, 199, 0.7);
+  transform: translateY(-1px);
+}
+.stage-related-thumb.playing .stage-related-thumb-media {
+  border-color: var(--accent);
+  background:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 14px, transparent 14px 28px),
+    linear-gradient(135deg, #082345 0%, #0284c7 100%);
+}
+.stage-related-thumb.playing {
+  color: #fff;
+}
+.stage-related-thumb .now-playing-badge {
+  top: 6px;
+  left: 6px;
+  font-size: 9px;
+  padding: 4px 8px 4px 6px;
+}
+/* Bottom: active video player. Stage acts as the dark "container" (바탕);
+   inside it sit two flex regions — video and caption — with a gap between. */
+.stage-player {
+  flex: 1 1 0;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 112px;
+  background: #0b2545;
+}
+/* Video region: sized to the video's 16:9 aspect (no letterbox), capped by
+   the player's available height so it never overflows. */
+.stage-video-wrap {
+  flex: 0 1 auto;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 100%;
+  background: transparent;
+}
+.stage-player .stage-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+}
+/* Stage video scrubber — same interaction pattern as the hero scrubber:
+   click-to-seek, drag-to-scrub, expanding hit-target, with a transparent
+   native range input layered on top of the visual bar. */
+.stage-scrub-wrap {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  padding: 10px 0;
+  cursor: pointer;
+  z-index: 3;
+}
+.stage-progress {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 3px;
+  pointer-events: none;
+  transition: height 0.15s ease;
+}
+.stage-progress-bar {
+  position: relative;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.15s linear;
+}
+.stage-progress-bar::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.6);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.stage-scrub-wrap:hover .stage-progress { height: 7px; }
+.stage-scrub-wrap:hover .stage-progress-bar::after,
+.stage-scrub-wrap:active .stage-progress-bar::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.stage-scrubber {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  opacity: 0;
+}
+.stage-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.stage-scrubber::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.stage-scrubber::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.stage-scrubber::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+/* Caption region: takes ALL remaining space below the video. Logo/badge sit
+   centered (vertical) inside that space. */
+.stage-caption-region {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 14px 28px;
+  color: #fff;
+}
+.stage-caption-region .stage-product-title {
+  margin: 0;
+  font-size: 54px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+.stage-caption-region .now-playing-inline { margin-top: 18px; }
+@keyframes videoSlideInFromRight {
+  from {
+    transform: translateX(115%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+/* Closing detail: video screen slides out to the right, then the hero
+   video slides back in from the left. Driven by JS-toggled .closing-detail
+   class so the effect only runs on exit, not on initial page load. */
+.showcase.closing-detail .video-stage {
+  animation: videoExitRightThenEnterFromLeft 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes videoExitRightThenEnterFromLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  38% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  46% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.82;
+  }
 }
 /* Hide attract animation when detail open (no pulsing) */
 .showcase.detail .product-rail { animation: none !important; }
 
-/* Rail: slides to BOTTOM as horizontal strip */
+/* Rail in detail: shorter than initial (text-only, no image). */
 .showcase.detail .product-rail {
-  left: 0;
-  right: 0;
-  width: auto;
-  top: auto;
-  bottom: 0;
-  height: var(--strip-h);
-  border-radius: 22px;
-  flex-direction: row;
-  transition:
-    top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    bottom 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    left 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    right 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  height: var(--strip-h-detail);
+  border-radius: 26px;
 }
-/* Rail header becomes a compact left section (just back button) */
-.showcase.detail .rail-header {
-  flex-shrink: 0;
-  width: 200px;
-  border-bottom: none;
-  border-right: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+/* Hide image section in detail mode. */
+.showcase.detail .rail-thumb {
+  display: none;
 }
-.showcase.detail .rail-header::before { display: none; }
-.showcase.detail .rail-back { width: 100%; }
-/* Rail list becomes horizontal scroll */
+/* Compact paddings so the rail can shrink vertically to ~160px. */
 .showcase.detail .rail-list {
-  flex-direction: row;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 16px 20px;
+  padding: 10px 14px;
   gap: 14px;
-  align-items: stretch;
 }
-/* Rail tile in strip: compact, horizontal */
 .showcase.detail .rail-tile {
+  padding: 8px 20px;
+}
+.showcase.detail .rail-info {
+  gap: 4px;
+}
+/* The entire dark area is the back button — no inner button, just the
+   header itself acting as a clickable region. Higher specificity to
+   override the default gradient on .rail-header. */
+.rail-header.rail-back-area {
   flex-shrink: 0;
   width: 320px;
-  min-height: 0;
-  padding: 12px;
-  gap: 12px;
+  padding: 0;
+  border: none;
+  margin: 10px 0 10px 10px;
+  border-radius: 18px;
+  background: #0b2545;
+  color: #fff;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.12s ease;
+  appearance: none;
+  font-family: inherit;
 }
-.showcase.detail .rail-thumb {
-  width: 140px;
-  height: auto;
-  flex-shrink: 0;
+.rail-header.rail-back-area:hover { background: #143866; }
+.rail-header.rail-back-area:active { transform: scale(0.98); }
+.rail-header.rail-back-area .back-arrow {
+  font-size: 56px;
+  line-height: 1;
 }
-.showcase.detail .rail-name { font-size: 18px; }
-.showcase.detail .rail-cat { font-size: 11px; }
-.showcase.detail .rail-sub { font-size: 12px; }
+.rail-header.rail-back-area::before,
+.rail-header.rail-back-area::after { display: none; }
 
-/* Detail panel: slides in from right, top position, height reduced by strip */
+/* Detail panel: slides in from LEFT, fills 65% width, height reduced by strip */
 .showcase.detail .product-panel {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
-  bottom: calc(var(--strip-h) + var(--gap));
+  bottom: calc(var(--strip-h-detail) + var(--gap));
   transition:
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
     opacity 0.4s ease 0.2s,
@@ -333,16 +772,174 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 .stage-overlay {
   position: absolute; inset: 0;
   z-index: 2;
-  display: flex; flex-direction: column; justify-content: space-between;
+  display: flex; flex-direction: column; justify-content: flex-end;
   padding: 28px 32px;
   background: linear-gradient(180deg,
-    rgba(11,37,69,0.35) 0%,
-    rgba(11,37,69,0) 30%,
+    rgba(11,37,69,0) 0%,
     rgba(11,37,69,0) 55%,
     rgba(11,37,69,0.85) 100%);
   pointer-events: none;
 }
 .stage-overlay > * { pointer-events: auto; }
+
+/* Hero (initial-screen) overlay: no top darkening, no padding — selector pills
+   and progress bar are pinned to the bottom; the video itself is unobstructed. */
+.stage-overlay.hero {
+  background: linear-gradient(180deg,
+    rgba(11,37,69,0) 0%,
+    rgba(11,37,69,0) 60%,
+    rgba(11,37,69,0.55) 100%);
+  padding: 0;
+  justify-content: flex-end;
+}
+.hero-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 22px 0;
+}
+.hero-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.hero-pill {
+  padding: 9px 18px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.85);
+  background: rgba(0,0,0,0.42);
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+.hero-pill:hover {
+  background: rgba(0,0,0,0.62);
+  border-color: rgba(255,255,255,0.55);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.hero-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+}
+/* Scrubbable progress bar — visual track + invisible <input type="range"> on top
+   handles click-to-seek and drag-to-scrub on both desktop and touchscreens. */
+.hero-scrub-wrap {
+  position: relative;
+  padding: 10px 0;
+  cursor: pointer;
+}
+.hero-progress {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 3px;
+  pointer-events: none;
+  transition: height 0.15s ease;
+}
+.hero-progress-bar {
+  position: relative;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.15s linear;
+}
+.hero-progress-bar::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%) scale(0.6);
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.hero-scrub-wrap:hover .hero-progress { height: 7px; }
+.hero-scrub-wrap:hover .hero-progress-bar::after,
+.hero-scrub-wrap:active .hero-progress-bar::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.hero-scrubber {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  opacity: 0;
+}
+/* Native range thumb sizing — invisible (opacity:0 above) but big enough to
+   provide a generous touch hit-target. */
+.hero-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hero-scrubber::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.hero-scrubber::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.hero-scrubber::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+.hero-unmute-hint {
+  align-self: flex-end;
+  margin: 18px 22px 0 auto;
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.2s, opacity 0.25s, padding 0.25s, font-size 0.2s;
+}
+.hero-unmute-hint.unmuted {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  padding: 7px 12px;
+  background: rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.18);
+  opacity: 0.7;
+}
+.hero-unmute-hint.unmuted:hover {
+  opacity: 1;
+}
+.hero-unmute-hint:hover {
+  background: rgba(2,132,199,0.85);
+  transform: translateY(-1px);
+}
 
 .badges { display: flex; gap: 8px; flex-wrap: wrap; }
 .badge {
@@ -357,30 +954,86 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
 
 .slide-caption { color: #fff; max-width: 70%; }
 .slide-caption h2 {
-  font-size: 38px; font-weight: 800; margin: 0 0 8px;
+  font-size: 64px; font-weight: 800; margin: 0 0 12px;
   letter-spacing: -0.5px;
   text-shadow: 0 2px 20px rgba(0,0,0,0.4);
 }
+
+/* Brand logo rendering — used in stage caption, side rail, and product panel */
+.product-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  line-height: 1;
+}
+.product-brand .brand-logo {
+  display: inline-block;
+  height: 1em;
+  width: auto;
+  object-fit: contain;
+  vertical-align: baseline;
+}
+.product-brand .brand-name-text {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.product-brand .brand-suffix {
+  font-weight: 800;
+  font-size: 0.7em;
+  letter-spacing: -0.3px;
+  color: #0b2545;
+  white-space: pre-line;
+  line-height: 1.05;
+}
+/* Stage caption: white-on-dark, give logo + suffix a matching white pad
+   so the dark-navy "Tra"/"Manual Retractable" stay legible */
+.stage-product-title {
+  display: flex;
+  align-items: center;
+}
+.stage-product-title .product-brand {
+  background: rgba(255,255,255,0.92);
+  padding: 0.18em 0.55em;
+  border-radius: 10px;
+  filter: drop-shadow(0 2px 14px rgba(0,0,0,0.45));
+}
+.stage-product-title .brand-logo {
+  height: 1.05em;
+}
+.stage-product-title .brand-suffix {
+  color: #0b2545;
+}
+/* Panel title — large brochure heading */
+.panel-title .brand-logo { height: 0.95em; }
+.panel-title .brand-suffix { font-size: 0.7em; }
+/* Rail tile (vertical mode): smaller logo, suffix matches */
+.rail-name .product-brand {
+  gap: 0.45em;
+}
+.rail-name .brand-logo { height: 0.95em; }
+.rail-name .brand-suffix { font-size: 0.7em; }
 
 /* Inline "NOW PLAYING" badge in stage overlay (detail mode) */
 .now-playing-inline {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px 8px 14px;
+  gap: 14px;
+  padding: 14px 24px 14px 22px;
   background: rgba(255, 255, 255, 0.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 999px;
   backdrop-filter: blur(10px);
   color: #fff;
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 700;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-  margin-top: 4px;
+  margin-top: 10px;
 }
 .now-playing-inline .np-dot {
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #10b981;
   box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
@@ -392,7 +1045,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 .now-playing-inline .np-label {
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 1.5px;
   opacity: 0.85;
 }
@@ -527,11 +1180,73 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   width: 200px;
   align-self: stretch;
   flex-shrink: 0;
-  border-radius: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(10, 35, 70, 0.08);
   min-height: 0;
-  object-fit: cover;
+  position: relative;
+  overflow: hidden;
 }
-img.rail-thumb { display: block; }
+.rail-thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+.rail-thumb-extra {
+  position: absolute;
+  bottom: 4%;
+  right: 4%;
+  width: 60%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(10, 35, 70, 0.18));
+}
+/* ROBOPERA: anchor console image slightly above center so grippers sit cleanly in the bottom whitespace */
+.rail-tile[data-slug="robopera"] .rail-thumb-img {
+  object-position: center 38%;
+}
+/* EndoCubot: nudge machine up to free room for a larger holder overlay */
+.rail-tile[data-slug="endocubot"] .rail-thumb-img {
+  object-position: center 40%;
+}
+.rail-tile[data-slug="endocubot"] .rail-thumb-extra {
+  width: 72%;
+  bottom: 3%;
+  right: 3%;
+}
+.rail-tile[data-slug="robopera"] .rail-thumb-extra {
+  bottom: 6%;
+  right: 6%;
+  width: 16%;
+  filter: drop-shadow(0 2px 6px rgba(10, 35, 70, 0.22));
+}
+/* Row of multiple gripper/accessory thumbnails along the bottom of a rail tile */
+.rail-thumb-extras-row {
+  position: absolute;
+  left: 4%;
+  right: -4%;
+  bottom: -3.5%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 0;
+  pointer-events: none;
+}
+.rail-thumb-extras-row .rail-thumb-extra-item:first-child {
+  margin-right: -16%;
+}
+.rail-thumb-extra-item {
+  width: 48%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(10, 35, 70, 0.22));
+}
+/* ROBOPERA grippers: mirror so jaws/forceps point to the right */
+.rail-tile[data-slug="robopera"] .rail-thumb-extra-item {
+  transform: scaleX(-1);
+}
 img.brochure-image {
   width: 100%;
   height: auto;
@@ -540,6 +1255,127 @@ img.brochure-image {
   object-fit: cover;
   border-radius: var(--radius);
   box-shadow: 0 8px 24px rgba(10, 35, 70, 0.08);
+}
+/* Overview image column — mirrors the initial-screen rail-thumb composite
+   (main product photo + accessory overlay). The whole column scrolls
+   normally with the right-column text (no sticky pin). */
+.brochure-image-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-self: start;
+}
+.brochure-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  background: #fff;
+  padding: 18px;
+  border-radius: 22px;
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 35, 70, 0.06),
+    0 8px 24px rgba(10, 35, 70, 0.08);
+  overflow: hidden;
+}
+/* Clearance call-out sitting under the photo */
+.brochure-clearance {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 14px;
+}
+.brochure-clearance-key {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.brochure-clearance-val {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+/* Purple variant — used for "Coming Soon" availability notice on pre-release
+   products. Same box style as the certification call-out, but the key label
+   is hidden and only the value is shown, large and centered, in violet. */
+.brochure-clearance.is-coming-soon {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.10) 0%, rgba(168, 85, 247, 0.06) 100%);
+  border-color: rgba(124, 58, 237, 0.28);
+  align-items: flex-start;
+  padding: 26px 22px;
+}
+.brochure-clearance.is-coming-soon .brochure-clearance-key {
+  display: none;
+}
+.brochure-clearance.is-coming-soon .brochure-clearance-val {
+  color: #6d28d9;
+  font-size: 38px;
+  letter-spacing: 0.3px;
+}
+.brochure-image-main {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 14px;
+}
+/* ROBOPERA: console anchored slightly above center to free room for the
+   gripper row (matches initial-screen behavior). */
+.brochure-image-wrap[data-slug="robopera"] .brochure-image-main {
+  object-position: center 30%;
+  transform: scale(0.9);
+  transform-origin: center top;
+}
+.brochure-image-wrap[data-slug="endocubot"] .brochure-image-main {
+  object-position: center 22%;
+  transform: scale(0.9);
+  transform-origin: center top;
+}
+/* Single accessory overlay (e.g., EndoCubot holder) */
+.brochure-image-extra {
+  position: absolute;
+  bottom: 4%;
+  right: 4%;
+  width: 60%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(10, 35, 70, 0.18));
+}
+.brochure-image-wrap[data-slug="endocubot"] .brochure-image-extra {
+  width: 72%;
+  bottom: 3%;
+  right: 3%;
+}
+/* Multiple accessory overlays (e.g., ROBOPERA basic + dual gripper) */
+.brochure-image-extras-row {
+  position: absolute;
+  left: 4%;
+  right: -4%;
+  bottom: -3.5%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 0;
+  pointer-events: none;
+}
+.brochure-image-extra-item {
+  width: 36%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(10, 35, 70, 0.22));
+}
+.brochure-image-wrap[data-slug="robopera"] .brochure-image-extra-item {
+  transform: scaleX(-1);
+}
+.brochure-image-extras-row .brochure-image-extra-item:first-child {
+  margin-right: -12%;
 }
 .rail-thumb .ph-label { font-size: 12px; }
 .rail-info {
@@ -560,6 +1396,41 @@ img.brochure-image {
 .rail-sub {
   font-size: 15px; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rail-coming-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-top: 14px;
+}
+.rail-coming-soon-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6);
+  animation: comingSoonPulse 1.6s ease-in-out infinite;
+}
+@keyframes comingSoonPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+}
+.showcase .rail-coming-soon {
+  font-size: 22px;
+  padding: 10px 22px;
+  gap: 12px;
+  letter-spacing: 1.6px;
+}
+.showcase .rail-coming-soon-dot {
+  width: 12px; height: 12px;
 }
 
 /* ---------- Product detail panel ---------- */
@@ -621,16 +1492,47 @@ img.brochure-image {
 .spec-val { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 6px; }
 
 .panel-h3 {
-  font-size: 24px; font-weight: 800;
-  margin: 0 0 20px;
+  font-size: 30px; font-weight: 800;
+  margin: 0 0 24px;
   color: var(--text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
 }
-.panel-h3.sm { font-size: 18px; margin-bottom: 14px; }
+.panel-h3.sm { font-size: 22px; margin-bottom: 16px; }
 .panel-h3::before {
   content: ""; display: inline-block;
-  width: 5px; height: 22px; background: var(--accent);
-  border-radius: 2px; vertical-align: -4px; margin-right: 12px;
+  width: 6px; height: 26px; background: var(--accent);
+  border-radius: 2px; vertical-align: -5px; margin-right: 14px;
+}
+/* Numbered section header — heavy editorial tone: oversized numeric in
+   dark navy with a thick rule separating it from the heading. No
+   gradient, no shadow, no rounded corners. */
+.panel-section-head {
+  display: flex;
+  align-items: center;
+  margin: 0 0 32px;
+}
+.panel-section-head .panel-h3 {
+  margin: 0;
+  font-size: 42px;
+  letter-spacing: -0.6px;
+}
+.panel-section-head .panel-h3::before {
+  display: none;
+}
+.panel-section-num {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 26px 0 0;
+  margin-right: 26px;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-right: 5px solid var(--text);
+  color: var(--text);
+  font-size: 80px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 0.9;
 }
 
 .related-videos {
@@ -779,7 +1681,14 @@ img.brochure-image {
 }
 
 /* ---------- Brochure section (panel top) ---------- */
-.panel-section { }
+.panel-section {
+  position: relative;
+  padding-top: 8px;
+}
+.panel-section + .panel-section {
+  padding-top: 36px;
+  border-top: 1px solid var(--border);
+}
 .brochure-grid {
   display: grid;
   grid-template-columns: 1fr 1.05fr;
@@ -793,45 +1702,97 @@ img.brochure-image {
 }
 .brochure-text { padding: 4px 0; }
 .brochure-cat {
-  font-size: 14px; font-weight: 800; letter-spacing: 2.2px;
+  font-size: 17px; font-weight: 800; letter-spacing: 2.4px;
   color: var(--accent); text-transform: uppercase;
 }
-.brochure-heading {
-  font-size: 30px; font-weight: 800;
-  margin: 10px 0 18px;
+/* Product brand block (logo + suffix below) — mirrors the initial-screen
+   tile so the user lands on a familiar header when entering detail mode. */
+.brochure-brand {
+  margin: 0 0 8px;
+}
+.brochure-brand .product-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2em;
+  white-space: normal;
+  font-size: 92px;
+  font-weight: 900;
+  letter-spacing: -1.8px;
+  line-height: 1;
   color: var(--text);
-  letter-spacing: -0.4px;
+}
+.brochure-brand .brand-logo {
+  height: 1.2em;
+  width: auto;
+}
+.brochure-brand .brand-suffix {
+  font-size: 0.5em;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: normal;
+  color: #0b2545;
+}
+.brochure-sub {
+  font-size: 38px;
+  font-weight: 600;
+  color: var(--text-dim);
+  line-height: 1.3;
+  margin: 0 0 36px;
+  letter-spacing: -0.3px;
+}
+.brochure-coming-soon {
+  margin: 4px 0 22px;
+}
+.brochure-heading {
+  font-size: 36px; font-weight: 800;
+  margin: 12px 0 22px;
+  color: var(--text);
+  letter-spacing: -0.5px;
   line-height: 1.25;
 }
 .brochure-desc {
-  font-size: 18px; line-height: 1.65;
+  font-size: 21px; line-height: 1.6;
   color: var(--text);
-  margin: 0 0 22px;
+  margin: 0 0 26px;
 }
 .brochure-highlights {
   list-style: none; padding: 0;
-  margin: 0 0 24px;
-  display: flex; flex-direction: column; gap: 10px;
+  margin: 0 0 32px;
+  display: flex; flex-direction: column; gap: 0;
 }
 .brochure-highlights li {
   position: relative;
-  padding: 12px 16px 12px 44px;
+  padding: 14px 18px 14px 50px;
   background: var(--panel-2);
   border-radius: 12px;
-  font-size: 16px; line-height: 1.55;
+  font-size: 30px; line-height: 1.45;
   color: var(--text);
 }
 .brochure-highlights li::before {
-  content: "✓";
+  content: "";
   position: absolute;
-  left: 12px; top: 50%;
-  transform: translateY(-50%);
-  width: 24px; height: 24px;
-  border-radius: 50%;
+  left: 30px; top: 36px;
+  width: 14px; height: 14px;
+  border-radius: 0;
   background: var(--accent);
-  color: #fff;
-  font-size: 13px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
+  transform: rotate(45deg);
+}
+.brochure-highlights li {
+  padding-left: 60px;
+  background: transparent;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border);
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+.brochure-highlight-name {
+  font-weight: 800;
+  color: var(--text);
+}
+.brochure-highlight-body {
+  font-weight: 500;
+  color: var(--text-dim);
 }
 .brochure-specs {
   display: grid;
@@ -847,22 +1808,496 @@ img.brochure-image {
   border-radius: 10px;
 }
 .brochure-spec-key {
-  font-size: 12px; color: var(--text-dim);
-  text-transform: uppercase; letter-spacing: 1px;
+  font-size: 20px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 1.8px;
+  font-weight: 700;
 }
 .brochure-spec-val {
-  font-size: 19px; font-weight: 700; color: var(--text);
-  margin-top: 4px;
+  font-size: 38px; font-weight: 800; color: var(--text);
+  margin-top: 10px;
+  letter-spacing: -0.5px;
 }
 
-/* ---------- Components section ---------- */
+/* ---------- Components section (brochure-style cards, each with own spec) ---------- */
+.components-brochure-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.component-brochure-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(2, 132, 199, 0.05) 0%, rgba(99, 102, 241, 0.03) 100%);
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  border-radius: 18px;
+  overflow: hidden;
+}
+/* Each sub-component section inside a card (combined cards have multiple) */
+.component-brochure-section {
+  padding: 32px 36px 36px;
+}
+.component-brochure-section + .component-brochure-section {
+  border-top: 1px solid rgba(2, 132, 199, 0.18);
+}
+.component-brochure-section-head {
+  margin-bottom: 26px;
+}
+.component-brochure-section-name {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--text);
+  line-height: 1.1;
+}
+.component-brochure-tagline {
+  margin: 14px 0 0;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+/* Row: image | spec — two columns side-by-side, equal heights */
+.component-brochure-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: stretch;
+}
+.component-brochure-media {
+  display: flex;
+  flex-direction: column;
+}
+.component-brochure-media {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* The visible "box" is a tighter wrapper that clips the zoomed image so the
+   product fills the frame instead of floating in source-image whitespace. */
+.component-brochure-image-box {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(10, 35, 70, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.component-brochure-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1);
+  transform-origin: center;
+}
+/* Multi-image row (e.g., Controller A + B) — labeled side-by-side */
+.component-brochure-image-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.component-brochure-image-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.component-brochure-image-row .component-brochure-image-box {
+  height: 100%;
+  min-height: 320px;
+}
+.component-brochure-image-row .component-brochure-image {
+  transform: scale(1.4);
+}
+/* Driver Unit Front/Back: shrink the photos so the white box has more
+   breathing room around the device. */
+.component-brochure-image-row .component-brochure-image[data-component-id="driver-unit"] {
+  transform: scale(0.85);
+}
+/* Brochure technical diagram strip — placed below the main product photo */
+.component-brochure-diagrams {
+  margin-top: 18px;
+  display: grid;
+  gap: 14px;
+}
+.component-brochure-diagrams[data-count="2"] {
+  grid-template-columns: 1fr 1fr;
+}
+.component-brochure-diagrams[data-count="3"] {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.component-brochure-diagram {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.component-brochure-diagram-box {
+  width: 100%;
+  height: 160px;
+  background: #fff;
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.component-brochure-diagram-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.component-brochure-diagram-label {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+}
+/* Diagram box becomes a button for click-to-zoom in place */
+button.component-brochure-diagram-box {
+  appearance: none;
+  cursor: zoom-in;
+  font: inherit;
+  color: inherit;
+  padding: 12px;
+}
+button.component-brochure-diagram-box:hover {
+  border-color: rgba(2, 132, 199, 0.45);
+}
+button.component-brochure-diagram-box:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+/* Subtle magnifier hint on each zoomable diagram — icon only, low opacity.
+   Scoped to <button> so only the 6 gripper diagrams get it. */
+button.component-brochure-diagram-box::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/><line x1='11' y1='8' x2='11' y2='14'/><line x1='8' y1='11' x2='14' y2='11'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+button.component-brochure-diagram-box:hover::after {
+  opacity: 0.85;
+}
+/* While its clone is zoomed via portal, hide the original (keep its layout). */
+button.component-brochure-diagram-box.is-zoomed-source {
+  visibility: hidden;
+}
+/* Portal-rendered zoom: lives at <body> level so no ancestor stacking context
+   or overflow:hidden can clip or layer over it. */
+.image-zoom-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646; /* near max int — guarantees top-most */
+  pointer-events: none;
+}
+.image-zoom-portal > * { pointer-events: auto; }
+.image-zoom-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 8, 23, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: zoom-out;
+  animation: imageZoomFade 180ms ease-out;
+}
+@keyframes imageZoomFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+/* Floating clone — starts at the source rect, scales to 2.5x and translates
+   if needed so the scaled box stays within the viewport. */
+.image-zoom-floating {
+  position: fixed;
+  background: #fff;
+  border: 1px solid rgba(2, 132, 199, 0.55);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  transform-origin: center center;
+  transform: translate(0, 0) scale(1);
+  animation: imageZoomScale 220ms cubic-bezier(0.2, 0.7, 0.3, 1.1) forwards;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+@keyframes imageZoomScale {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(var(--zoom-tx, 0), var(--zoom-ty, 0)) scale(2.5); }
+}
+.image-zoom-floating-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.component-brochure-image-label {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+/* Tissue Holder Set / Phantom Tissue cards — no spec column, small product
+   photos in a 4-column grid (last row left-aligned). Span the full card width
+   and reset the default 1.4× scale used by the 2-column image rows. */
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-row,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-row {
+  grid-template-columns: 1fr;
+}
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image-row,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px 18px;
+  justify-items: stretch;
+}
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image-figure,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image-figure {
+  width: 80%;
+  margin: 0 auto;
+}
+/* Tissue Holder: 4-column grid is kept (4 + 3 layout), but each figure is
+   narrowed to 64% so the rendered tile width matches Phantom Tissue's 5-col
+   tiles (4-col × 80% ≈ 5-col × 64% of card width). */
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image-figure {
+  width: 64%;
+}
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image-box,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image-box {
+  min-height: 0;
+  height: 72px;
+  padding: 6px;
+}
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image {
+  transform: scale(0.8);
+  transform-origin: center;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.component-brochure-section[data-component-id="tissue-holder"] .component-brochure-image-label,
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image-label {
+  font-size: 30px;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+/* Phantom Tissue layout — all 5 tiles in a single row. Override the shared
+   4-column grid (used by Tissue Holder) to use 5 columns. Box dimensions are
+   shared with Tissue Holder via the rule above. */
+.component-brochure-section[data-component-id="phantom-tissue"] .component-brochure-image-row {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+/* EndoCubot™ card — make the image box visually match the spec-strip box.
+   1) Insert an invisible line-box matching the "SPECIFICATION" title above
+      the image-box so its top aligns with the spec-strip top.
+   2) Stretch spec-strip (and distribute cells) so the spec-strip bottom
+      aligns with the image-box bottom — making the two boxes the same
+      visual height. */
+.component-brochure-section[data-component-id="endocubot-set"] .component-brochure-media::before {
+  content: "SPECIFICATION";
+  visibility: hidden;
+  display: block;
+  flex: none;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.component-brochure-section[data-component-id="endocubot-set"] .spec-strip {
+  flex: 1 1 0;
+}
+.component-brochure-section[data-component-id="endocubot-set"] .spec-strip-cell {
+  flex: 1 1 0;
+  justify-content: center;
+}
+/* EndoCubot image-box: scoped smaller min-height (kept independent from
+   the ROBOPERA defaults). The box still stretches to match the spec strip
+   via the row's align-items: stretch. */
+.component-brochure-section[data-component-id="endocubot-set"] .component-brochure-image-box {
+  min-height: 160px;
+}
+/* Shrink the EndoCubot photo inside its box to ~70% so the device sits with
+   more breathing room around it. */
+.component-brochure-section[data-component-id="endocubot-set"] .component-brochure-image {
+  transform: scale(0.7);
+  transform-origin: center;
+}
+/* Flip gripper images horizontally so the jaws point right (matches the
+   brochure orientation for the Instrument category). */
+.component-brochure-image[data-component-id="basic-gripper-g"],
+.component-brochure-image[data-component-id="dual-gripper-g"] {
+  transform: scaleX(-1);
+}
+/* Gripper-style layouts (3 brochure diagrams under the main photo): rebalance
+   so the main photo doesn't dominate and the 3 diagrams render large enough
+   to read. Spec column is narrowed to give the media side more room. */
+.component-brochure-row:has(.component-brochure-diagrams[data-count="3"]),
+.component-brochure-section[data-component-id="driver-unit"] .component-brochure-row,
+.component-brochure-section[data-component-id="controller"] .component-brochure-row {
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.85fr);
+}
+.component-brochure-media:has(.component-brochure-diagrams[data-count="3"]) .component-brochure-image-box {
+  flex: none;
+  height: 400px;
+  min-height: 0;
+}
+.component-brochure-media:has(.component-brochure-diagrams[data-count="3"]) .component-brochure-diagram-box {
+  height: 240px;
+  padding: 12px;
+}
+.component-brochure-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.component-brochure-bullets li {
+  position: relative;
+  padding-left: 36px;
+  font-size: 28px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.component-brochure-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 4px; top: 17px;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+.component-brochure-bullet-name {
+  font-weight: 800;
+  color: var(--text);
+}
+.component-brochure-bullet-body {
+  color: var(--text-dim);
+}
+.component-brochure-desc {
+  font-size: 26px;
+  line-height: 1.5;
+  color: var(--text-dim);
+  margin: 0;
+}
+/* Per-section Specification column (3rd column of the brochure row) */
+.component-brochure-spec-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* Info column variant — used when a component card has description + bullets
+   instead of a spec strip (e.g., TraCloser configuration cards). */
+.component-brochure-info-col {
+  justify-content: center;
+  gap: 22px;
+  padding: 4px 6px 4px 0;
+}
+.component-brochure-description {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.45;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+.component-brochure-bullets {
+  margin: 0;
+  padding-left: 32px;
+  list-style: disc;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.component-brochure-bullets li {
+  margin: 14px 0;
+}
+.component-brochure-bullets li::marker {
+  color: var(--accent);
+  font-size: 1.2em;
+}
+/* TraCloser Configuration cards — slightly inset photo with modest breathing
+   room around the device, while keeping the box close to the default size. */
+.component-brochure-section[data-component-id="tracloser-config-robotic"] .component-brochure-image-box,
+.component-brochure-section[data-component-id="tracloser-config-manual"] .component-brochure-image-box {
+  padding: 22px;
+}
+.component-brochure-section[data-component-id="tracloser-config-robotic"] .component-brochure-image,
+.component-brochure-section[data-component-id="tracloser-config-manual"] .component-brochure-image {
+  transform: scale(0.85);
+  transform-origin: center;
+}
+.component-brochure-spec-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+/* Spec strip — vertical stack of label/value cells for the narrow spec column */
+.spec-strip {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.spec-strip-cell {
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid rgba(10, 35, 70, 0.08);
+}
+.spec-strip-cell:last-child {
+  border-bottom: none;
+}
+.spec-strip-cell-label {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.spec-strip-cell-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+/* Legacy (still used by other products without brochure restructure) */
 .components-group { margin-bottom: 24px; }
 .components-group:last-child { margin-bottom: 0; }
 .components-group-label {
-  font-size: 13px; font-weight: 800; letter-spacing: 2.2px;
+  font-size: 16px; font-weight: 800; letter-spacing: 2.4px;
   color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex; align-items: center; gap: 12px;
 }
 .components-group-label::after {
@@ -897,46 +2332,92 @@ img.brochure-image {
 }
 .component-body { display: flex; flex-direction: column; min-width: 0; }
 .component-name {
-  font-size: 20px; font-weight: 800;
+  font-size: 24px; font-weight: 800;
   color: var(--text);
   letter-spacing: -0.3px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .component-desc {
-  font-size: 15px; line-height: 1.55;
+  font-size: 17px; line-height: 1.55;
   color: var(--text-dim);
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 }
 .component-specs {
-  display: flex; flex-direction: column; gap: 4px;
+  display: flex; flex-direction: column; gap: 6px;
   margin-top: auto;
 }
 .component-spec {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 14px;
+  padding: 10px 16px;
   background: var(--panel-2);
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
 }
 .component-spec-key {
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
 }
 .component-spec-val {
   color: var(--text);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 17px;
+}
+
+.component-specs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: auto;
+  font-size: 16px;
+  background: var(--panel-2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.component-specs-table thead th {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 10px 14px;
+  background: rgba(2, 132, 199, 0.06);
+  border-bottom: 1px solid var(--border);
+}
+.component-specs-table tbody th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 12px 14px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+}
+.component-specs-table tbody td {
+  padding: 12px 14px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.component-specs-table tbody tr:last-child th,
+.component-specs-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 /* ---------- Clinical / Papers ---------- */
 .clinical-summary-label {
-  font-size: 13px; font-weight: 800; letter-spacing: 2.2px;
+  font-size: 24px; font-weight: 800; letter-spacing: 2.4px;
   color: var(--text-dim);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .papers-block { margin-top: 36px; }
 .papers-header {
@@ -944,7 +2425,7 @@ img.brochure-image {
   margin-bottom: 14px;
 }
 .papers-hint {
-  font-size: 14px; color: var(--text-dim);
+  font-size: 20px; color: var(--text-dim);
 }
 .papers-list {
   display: flex; flex-direction: column; gap: 10px;
@@ -970,35 +2451,44 @@ img.brochure-image {
 .paper-row:hover { background: var(--panel-2); }
 .paper-row-main { flex: 1; min-width: 0; }
 .paper-title {
-  font-size: 18px; font-weight: 700;
+  font-size: 34px; font-weight: 700;
   color: var(--text);
-  line-height: 1.4;
-  margin-bottom: 8px;
+  line-height: 1.35;
+  margin-bottom: 14px;
 }
 .paper-meta {
-  font-size: 14px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 28px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
 }
 .paper-journal { font-weight: 700; color: var(--accent); font-style: italic; }
+/* Keyword chip — warm stone (taupe) palette. Default text color matches the
+   stone tone for a calm, sturdy look. Human-subject studies override the
+   text color to deep violet so they stand out at a glance. */
 .paper-type {
-  padding: 3px 10px;
-  background: rgba(2,132,199,0.08);
-  color: var(--accent);
-  border-radius: 999px;
+  display: inline-block;
+  padding: 4px 14px;
+  background: rgba(120, 113, 108, 0.10);
+  color: #57534e;
+  border: 1px solid rgba(120, 113, 108, 0.30);
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.paper-type.is-human {
+  color: #6d28d9;
 }
 .paper-dot { opacity: 0.4; }
 .paper-authors {
-  font-size: 14px; color: var(--text-dim);
-  margin-top: 6px;
+  font-size: 26px; color: var(--text-dim);
+  margin-top: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .paper-chevron {
-  font-size: 13px;
+  font-size: 22px;
   color: var(--text-dim);
   flex-shrink: 0;
   transition: color 0.2s;
@@ -1017,20 +2507,20 @@ img.brochure-image {
 }
 .paper-detail-section { margin-top: 20px; }
 .paper-detail-label {
-  font-size: 12px; font-weight: 800; letter-spacing: 1.8px;
+  font-size: 26px; font-weight: 800; letter-spacing: 2px;
   color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 .paper-detail-val {
-  font-size: 15px; color: var(--text);
+  font-size: 22px; color: var(--text);
   line-height: 1.5;
 }
 .paper-abstract {
-  font-size: 16px; line-height: 1.65;
+  font-size: 28px; line-height: 1.6;
   color: var(--text);
   margin: 0;
-  padding: 18px 20px;
+  padding: 20px 22px;
   background: var(--panel-2);
   border-radius: 12px;
   border-left: 4px solid var(--accent);
@@ -1074,28 +2564,28 @@ img.brochure-image {
 }
 .hero-stat-value {
   position: relative;
-  font-size: 52px;
+  font-size: 60px;
   font-weight: 900;
-  letter-spacing: -1.5px;
+  letter-spacing: -1.8px;
   line-height: 1;
   color: var(--text);
 }
 .hero-stat.highlight .hero-stat-value { color: #fff; }
 .hero-stat-label {
   position: relative;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 800;
   color: var(--text);
-  margin-top: 14px;
-  letter-spacing: 0.2px;
+  margin-top: 16px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 .hero-stat.highlight .hero-stat-label { color: #fff; }
 .hero-stat-sub {
   position: relative;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-dim);
-  margin-top: 6px;
+  margin-top: 8px;
   line-height: 1.45;
 }
 .hero-stat.highlight .hero-stat-sub { color: rgba(255,255,255,0.85); }
@@ -1112,7 +2602,7 @@ img.brochure-image {
   margin-top: 18px;
 }
 .paper-hero-big {
-  font-size: 38px;
+  font-size: 56px;
   font-weight: 900;
   color: var(--accent);
   letter-spacing: -1px;
@@ -1121,15 +2611,15 @@ img.brochure-image {
 }
 .paper-hero-text { flex: 1; min-width: 0; }
 .paper-hero-label {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .paper-hero-sub {
-  font-size: 13px;
+  font-size: 18px;
   color: var(--text-dim);
-  margin-top: 4px;
+  margin-top: 6px;
   line-height: 1.4;
 }
 
@@ -1141,111 +2631,26 @@ img.brochure-image {
 }
 .paper-claims li {
   position: relative;
-  padding: 12px 16px 12px 42px;
+  padding: 24px 26px 24px 84px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  border-left: 4px solid var(--accent);
   border-radius: 10px;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 36px;
+  line-height: 1.45;
+  font-weight: 600;
   color: var(--text);
-  font-weight: 500;
 }
 .paper-claims li::before {
   content: "✓";
   position: absolute;
-  left: 12px; top: 50%;
-  transform: translateY(-50%);
-  width: 22px; height: 22px;
+  left: 22px; top: 26px;
+  width: 46px; height: 46px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), #6366f1);
   color: #fff;
-  font-size: 12px; font-weight: 800;
+  font-size: 26px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
-}
-
-/* ---------- Comparison bar chart ---------- */
-.paper-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 18px 20px;
-  background: linear-gradient(135deg, rgba(2,132,199,0.05), rgba(99,102,241,0.03));
-  border: 1px solid rgba(2,132,199,0.15);
-  border-radius: 12px;
-}
-.chart-row {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 18px;
-  align-items: center;
-}
-.chart-row-label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-.chart-unit {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0;
-}
-.chart-bars { display: flex; flex-direction: column; gap: 6px; }
-.chart-bar-line {
-  display: grid;
-  grid-template-columns: 90px 1fr 80px;
-  align-items: center;
-  gap: 12px;
-  font-size: 13px;
-}
-.chart-bar-name {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.chart-bar-line.robotic .chart-bar-name { color: var(--accent); }
-.chart-bar-track {
-  position: relative;
-  height: 22px;
-  background: rgba(10,35,70,0.06);
-  border-radius: 11px;
-  overflow: hidden;
-}
-.chart-bar-fill {
-  height: 100%;
-  border-radius: 11px;
-  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.chart-bar-fill.conventional {
-  background: linear-gradient(90deg, #9fb3d1, #7a92b5);
-}
-.chart-bar-fill.robotic {
-  background: linear-gradient(90deg, var(--accent), #6366f1);
-  box-shadow: 0 2px 8px rgba(2,132,199,0.3);
-}
-.chart-bar-value {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--text);
-  text-align: right;
-}
-.chart-win-badge {
-  position: absolute;
-  right: 10px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  padding: 2px 7px;
-  background: rgba(255,255,255,0.9);
-  color: var(--accent);
-  border-radius: 999px;
 }
 
 /* Papers grouped by component — each group is a distinct card */
@@ -1268,29 +2673,30 @@ img.brochure-image {
   border-radius: 0 4px 4px 0;
 }
 .papers-component-label {
-  display: flex; align-items: center; gap: 14px;
-  font-size: 22px; font-weight: 900;
+  display: flex; align-items: center; gap: 16px;
+  font-size: 42px; font-weight: 900;
   color: var(--text);
-  padding-bottom: 16px;
-  margin-bottom: 18px;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
   border-bottom: 2px dashed var(--border);
+  letter-spacing: -0.5px;
   letter-spacing: -0.4px;
 }
 .papers-component-tag {
-  font-size: 11px; font-weight: 800; letter-spacing: 2px;
+  font-size: 16px; font-weight: 800; letter-spacing: 2px;
   color: #fff;
   background: linear-gradient(135deg, var(--accent), #6366f1);
-  padding: 5px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   box-shadow: 0 3px 10px rgba(2,132,199,0.3);
 }
 .papers-count {
   margin-left: auto;
-  font-size: 14px; font-weight: 800;
+  font-size: 28px; font-weight: 800;
   color: var(--accent);
   background: var(--panel);
   border: 1px solid rgba(2,132,199,0.25);
-  padding: 5px 14px;
+  padding: 10px 22px;
   border-radius: 999px;
   letter-spacing: 0.3px;
 }
@@ -1313,55 +2719,22 @@ img.brochure-image {
 }
 .paper-clinical-row {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 16px;
+  grid-template-columns: 340px 1fr;
+  gap: 22px;
   align-items: start;
   padding: 8px 0;
   border-bottom: 1px dashed rgba(10, 35, 70, 0.08);
 }
 .paper-clinical-row:last-child { border-bottom: none; }
 .paper-clinical-k {
-  font-size: 13px; font-weight: 700; letter-spacing: 0.6px;
+  font-size: 22px; font-weight: 700; letter-spacing: 0.6px;
   color: var(--text-dim);
   text-transform: uppercase;
 }
 .paper-clinical-v {
-  font-size: 16px; color: var(--text);
+  font-size: 28px; color: var(--text);
   line-height: 1.5;
   font-weight: 600;
-}
-
-/* Paper action buttons (PDF / publisher link) */
-.paper-actions {
-  display: flex; gap: 10px; flex-wrap: wrap;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-.paper-action-btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 14px 22px;
-  border-radius: 12px;
-  font-size: 15px; font-weight: 700;
-  text-decoration: none;
-  background: var(--panel-2);
-  color: var(--text);
-  border: 1px solid var(--border);
-  transition: background 0.2s, color 0.2s, transform 0.15s;
-}
-.paper-action-btn:hover {
-  background: var(--panel);
-  border-color: var(--accent);
-}
-.paper-action-btn:active { transform: scale(0.97); }
-.paper-action-btn.primary {
-  background: linear-gradient(135deg, var(--accent), #6366f1);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-}
-.paper-action-btn.primary:hover {
-  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
 }
 
 /* ===================== Layout 2: Quad Expand ===================== */
@@ -1648,7 +3021,7 @@ img.brochure-image {
 
 /* ===================== 4K / Large Display (≥ 2560px) ===================== */
 @media (min-width: 2560px) {
-  :root { --rail-w: 960px; --gap: 32px; --radius: 26px; }
+  :root { --rail-w: 960px; --gap: 32px; --radius: 26px; --strip-h: 520px; --strip-h-detail: 395px; }
   .app { padding: 40px 48px; }
 
   /* Layout toggle */
@@ -1662,8 +3035,10 @@ img.brochure-image {
 
   /* Video stage */
   .stage-overlay { padding: 48px 56px; }
-  .slide-caption h2 { font-size: 60px; }
+  .slide-caption h2 { font-size: 96px; }
   .slide-caption p { font-size: 24px; }
+  .stage-caption-region .stage-product-title { font-size: 78px; }
+  .stage-player { padding-top: 160px; gap: 22px; }
   .badges { gap: 14px; }
   .badge { font-size: 18px; padding: 12px 20px; }
   .dot { width: 18px; height: 18px; }
@@ -1681,6 +3056,8 @@ img.brochure-image {
   .rail-thumb .ph-label { font-size: 16px; }
   .rail-cat { font-size: 18px; letter-spacing: 2px; }
   .rail-name { font-size: 36px; margin: 10px 0 8px; }
+  .showcase .rail-name { font-size: 80px; letter-spacing: -1.4px; }
+  .showcase .rail-sub { font-size: 30px; line-height: 1.4; }
   .rail-sub { font-size: 20px; }
   .rail-tile::after { width: 8px; }
   .back-btn { padding: 22px 32px; font-size: 22px; min-height: 68px; border-radius: 16px; }
@@ -1808,6 +3185,8 @@ img.brochure-image {
   .product-rail {
     flex: 1;
     min-height: 0;
+    height: auto;
+    flex-direction: column;
     border-radius: var(--radius);
     background-origin: padding-box;
     background-clip: padding-box;
@@ -1815,6 +3194,24 @@ img.brochure-image {
   .product-rail::before { display: none; }
   .showcase:not(.detail) .product-rail {
     animation: none;
+  }
+  /* Mobile: keep header visible and revert rail-list to vertical scroll */
+  .showcase:not(.detail) .rail-header { display: block; }
+  .showcase:not(.detail) .rail-list {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: auto;
+  }
+  .showcase:not(.detail) .rail-tile {
+    flex: 0 0 auto;
+    height: auto;
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .showcase:not(.detail) .rail-thumb {
+    width: 90px;
+    flex: none;
   }
   .rail-header { padding: 18px 16px 14px; }
   .rail-header::before { height: 4px; }
@@ -1829,6 +3226,10 @@ img.brochure-image {
   }
   .rail-thumb { width: 90px; height: 90px; border-radius: 10px; }
   .rail-name { font-size: 16px; }
+  .showcase:not(.detail) .rail-name { font-size: 20px; }
+  .showcase:not(.detail) .rail-name .brand-logo { height: 1.05em; }
+  .showcase:not(.detail) .rail-name .brand-suffix { font-size: 0.7em; }
+  .showcase:not(.detail) .rail-thumb { padding: 6px; }
   .rail-cat { font-size: 10px; }
   .rail-sub { font-size: 11px; }
 

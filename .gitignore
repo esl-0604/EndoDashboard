@@ -10,3 +10,5 @@ memory/
 *.tsbuildinfo
 
 .vercel
+
+_inbox/
