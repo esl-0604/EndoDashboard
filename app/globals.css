@@ -28,16 +28,33 @@ html, body {
   overflow: hidden;
   overscroll-behavior: none;
 }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; }
 
-/* ---------- Main app container ---------- */
+/* ---------- Main app container ----------
+   The interior layout is authored against a fixed 3840×2160 (4K) reference
+   so the kiosk display gets a pixel-perfect 1:1 view. For any other viewport
+   size, the entire app is uniformly scaled via transform so the proportions
+   stay exact. transform-origin is "center" (combined with body's flex
+   centering) so the app sits centered with letterboxing on the gradient
+   background when the viewport aspect doesn't match 16:9.
+
+   At exactly 3840×2160 the scale resolves to 1 — no transform applied.
+*/
 .app {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  width: 3840px;
+  height: 2160px;
+  flex: none;
   padding: 24px 28px;
   overflow: hidden;
+  transform: scale(min(calc(100vw / 3840), calc(100vh / 2160)));
+  transform-origin: center;
 }
 
 /* ---------- Layout toggle (floating, top-left) ---------- */
@@ -2225,16 +2242,16 @@ button.component-brochure-diagram-box.is-zoomed-source {
   margin: 0;
   padding-left: 0;
   list-style: none;
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--text);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
 }
 .component-brochure-bullets li {
   position: relative;
-  padding-left: 36px;
-  margin: 18px 0;
+  padding-left: 44px;
+  margin: 22px 0;
 }
 .component-brochure-bullets li::before {
   content: "◆";
@@ -3026,8 +3043,11 @@ button.component-brochure-diagram-box.is-zoomed-source {
     linear-gradient(135deg, #082345 0%, #0284c7 100%);
 }
 
-/* ===================== 4K / Large Display (≥ 2560px) ===================== */
-@media (min-width: 2560px) {
+/* ===================== 4K / Large Display reference =====================
+   These rules formerly fired only at @media (min-width: 2560px). Now that
+   the .app container is scaled via transform from a fixed 3840×2160 box,
+   the kiosk-grade sizing applies unconditionally (scale handles fitting). */
+@media all {
   :root { --rail-w: 960px; --gap: 32px; --radius: 26px; --strip-h: 520px; --strip-h-detail: 395px; }
   .app { padding: 40px 48px; }
 
@@ -3133,9 +3153,14 @@ button.component-brochure-diagram-box.is-zoomed-source {
 }
 
 /* ===================== Responsive ===================== */
+/* The viewport-width media queries below are intentionally disabled
+   (`(max-width: 0px)`) because the .app container is now uniformly
+   scaled from the 3840×2160 reference via transform, so per-breakpoint
+   font/padding overrides would fight the scale and produce inconsistent
+   layouts. Kept in source for reference / future revisit. */
 
-/* ---------- Tablet (≤ 1100px) ---------- */
-@media (max-width: 1100px) {
+/* ---------- Tablet (≤ 1100px) — disabled ---------- */
+@media (max-width: 0px) {
   :root { --rail-w: 420px; --gap: 16px; }
   .app { padding: 16px 18px; }
   .rail-header { padding: 28px 24px 20px; }
@@ -3158,7 +3183,7 @@ button.component-brochure-diagram-box.is-zoomed-source {
 }
 
 /* ---------- Mobile (≤ 768px) ---------- */
-@media (max-width: 768px) {
+@media (max-width: 0px) {
   :root { --rail-w: 100%; --gap: 12px; --radius: 14px; }
   .app { padding: 12px; height: 100vh; }
 
@@ -3318,7 +3343,7 @@ button.component-brochure-diagram-box.is-zoomed-source {
 }
 
 /* ---------- Small phone (≤ 480px) ---------- */
-@media (max-width: 480px) {
+@media (max-width: 0px) {
   .app { padding: 8px; }
   .video-stage { height: 180px; }
   .slide-caption h2 { font-size: 20px; }
