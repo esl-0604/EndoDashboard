@@ -712,7 +712,6 @@ export const PRODUCTS: Product[] = [
       { k: "Function", v: "Traction + Closure" },
       { k: "Retractable", v: "Yes" },
       { k: "Compatibility", v: "Standard Endoscope" },
-      { k: "Availability", v: "Coming Soon" },
     ],
     clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     videos: [
@@ -764,6 +763,7 @@ export const PRODUCTS: Product[] = [
         },
       },
     ],
+    comingSoon: true,
     components: [
       {
         id: "tracloser-config-robotic",

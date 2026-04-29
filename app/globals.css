@@ -2223,20 +2223,27 @@ button.component-brochure-diagram-box.is-zoomed-source {
 }
 .component-brochure-bullets {
   margin: 0;
-  padding-left: 32px;
-  list-style: disc;
-  font-size: 30px;
+  padding-left: 0;
+  list-style: none;
+  font-size: 36px;
   font-weight: 700;
   line-height: 1.4;
   color: var(--text);
   letter-spacing: -0.2px;
 }
 .component-brochure-bullets li {
-  margin: 14px 0;
+  position: relative;
+  padding-left: 36px;
+  margin: 18px 0;
 }
-.component-brochure-bullets li::marker {
+.component-brochure-bullets li::before {
+  content: "◆";
+  position: absolute;
+  left: 0;
+  top: 0;
   color: var(--accent);
-  font-size: 1.2em;
+  font-size: 0.8em;
+  line-height: 1.55;
 }
 /* TraCloser Configuration cards — slightly inset photo with modest breathing
    room around the device, while keeping the box close to the default size. */
