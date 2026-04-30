@@ -503,20 +503,30 @@ export default function LayoutOne({
                       const cert = product.specs.find((s) =>
                         /clearance|certification|availability/i.test(s.k)
                       );
-                      if (!cert) return null;
-                      const isComingSoon = /coming\s*soon/i.test(cert.v);
+                      if (!cert && !product.regulatoryNote) return null;
+                      const isComingSoon =
+                        cert && /coming\s*soon/i.test(cert.v);
                       return (
                         <div
                           className={`brochure-clearance${
                             isComingSoon ? " is-coming-soon" : ""
                           }`}
                         >
-                          <div className="brochure-clearance-key">
-                            {cert.k}
-                          </div>
-                          <div className="brochure-clearance-val">
-                            {cert.v}
-                          </div>
+                          {cert && (
+                            <>
+                              <div className="brochure-clearance-key">
+                                {cert.k}
+                              </div>
+                              <div className="brochure-clearance-val">
+                                {cert.v}
+                              </div>
+                            </>
+                          )}
+                          {product.regulatoryNote && (
+                            <div className="brochure-clearance-note">
+                              {product.regulatoryNote}
+                            </div>
+                          )}
                         </div>
                       );
                     })()}

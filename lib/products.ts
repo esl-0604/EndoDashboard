@@ -136,6 +136,10 @@ export type Product = {
   /** Marks the product as not yet released — replaces the gray subtitle on
    * the rail tile with a "Coming Soon" badge. */
   comingSoon?: boolean;
+  /** Optional short regulatory disclaimer rendered inside the Overview
+   * Clearance/Certification callout (e.g., "Not a medical device" for
+   * training simulators). Sits below the main cert value as small text. */
+  regulatoryNote?: string;
 };
 
 export const PRODUCTS: Product[] = [
@@ -589,6 +593,7 @@ export const PRODUCTS: Product[] = [
       { k: "Storage Conditions", v: "10–30 °C · 20–60% RH (non-condensing)" },
       { k: "Certification", v: "KC / FCC / CE / RoHS / NRTL (CSA)" },
     ],
+    regulatoryNote: "Not a medical device",
     clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     summary: [
       { value: "5", label: "Training Modules", sub: "ESD · EMR · Handling · Clip · Suture", highlight: true },
@@ -605,7 +610,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         id: "endocubot-live",
-        title: "Live Demonstration",
+        title: "Product Tutorial Video",
         src: "https://zfq2ghlrb0wylxpc.public.blob.vercel-storage.com/assets/products/endocubot/videos/02-live-demonstration.mp4",
         poster: "/assets/products/endocubot/videos/02-live-demonstration.jpg",
       },
@@ -705,6 +710,7 @@ export const PRODUCTS: Product[] = [
       { k: "Function", v: "Traction + Closure" },
       { k: "Retractable", v: "Yes" },
       { k: "Compatibility", v: "Standard Endoscope" },
+      { k: "Clearance", v: "Investigational device. Not cleared by the U.S. FDA. Not available for sale in the U.S." },
     ],
     clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     videos: [

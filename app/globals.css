@@ -1323,6 +1323,20 @@ img.brochure-image {
   letter-spacing: -0.3px;
   color: var(--text);
 }
+/* Regulatory disclaimer line — small bold pill underneath the cert value
+   for product-class statements like "Not a medical device" (training
+   simulator) or "Investigational device" (pre-clearance). Amber palette
+   to differentiate from regular cleared certifications. */
+.brochure-clearance-note {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(180, 83, 9, 0.35);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #b45309;
+}
 /* Purple variant — used for "Coming Soon" availability notice on pre-release
    products. Same box style as the certification call-out, but the key label
    is hidden and only the value is shown, large and centered, in violet. */
@@ -1339,6 +1353,15 @@ img.brochure-image {
   color: #6d28d9;
   font-size: 38px;
   letter-spacing: 0.3px;
+}
+/* TraCloser regulatory disclaimer — value text is much longer than a typical
+   certification line (FDA cleared / KC FCC CE) so soften the font weight and
+   reduce the size for legibility. */
+.brochure-image-col:has(.brochure-image-wrap[data-slug="tracloser-retractable"]) .brochure-clearance-val {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0;
 }
 .brochure-image-main {
   display: block;
