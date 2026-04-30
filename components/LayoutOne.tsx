@@ -899,6 +899,24 @@ export default function LayoutOne({
                                         )}
                                       </div>
                                       <div className="paper-authors">{p.authors}</div>
+                                      {(p.doi || p.openAccess !== undefined) && (
+                                        <div className="paper-row-footer">
+                                          <span
+                                            className={`paper-oa-badge ${
+                                              p.openAccess ? "open" : "closed"
+                                            }`}
+                                          >
+                                            {p.openAccess
+                                              ? "Open Access"
+                                              : "Subscription"}
+                                          </span>
+                                          {p.doi && (
+                                            <span className="paper-doi">
+                                              DOI: {p.doi}
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
                                     </div>
                                     <div className="paper-chevron" aria-hidden>
                                       {open ? "▲" : "▼"}

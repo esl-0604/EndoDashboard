@@ -63,6 +63,9 @@ export type Paper = {
   doi?: string;
   url?: string;
   pdf?: string;
+  /** Whether the published article is fully open-access (full text public).
+   * Used to show a small badge next to the DOI in the paper-row footer. */
+  openAccess?: boolean;
 
   /** Promotional headline shown at top of paper card (conference-booth friendly) */
   highlight?: {
@@ -319,6 +322,7 @@ export const PRODUCTS: Product[] = [
             doi: "10.1055/a-2802-4223",
             url: "https://doi.org/10.1055/a-2802-4223",
             pdf: "/assets/products/robopera/components/basic-gripper-g/papers/2026_Tvaradze_Barretts_Endoscopy.pdf",
+            openAccess: true,
             clinical: {
               patients: "1 (case report)",
               enBloc: "100%",
@@ -438,6 +442,7 @@ export const PRODUCTS: Product[] = [
             abstract: "Pilot evaluation of REXTER (revolute joint-based auxiliary transluminal endoscopic robot, 4 DOF, 15 mm links) — earliest RoSE-Platform prototype. 40 ESDs (10 per group × 2 methods × 2 skill levels) on 40 ex vivo porcine stomachs. Conventional ESD: experts 0/10 perforations vs novices 6/10; operation time 11.3 vs 26.7 min. Robot-assisted ESD: novice perforation rate dropped dramatically from 6/10 to 1/10. Novices achieved en bloc resection in all 10 robot-assisted cases (vs 2 piecemeal in conventional). Robotic assistance enabled novices to maintain knife parallel to stomach wall, markedly improving safety.",
             doi: "10.5009/gnl18370",
             url: "https://doi.org/10.5009/gnl18370",
+            openAccess: true,
             clinical: {
               patients: "40 ex vivo porcine ESDs",
               enBloc: "100% (novices RESD) vs 80% (novices CESD)",
@@ -548,6 +553,7 @@ export const PRODUCTS: Product[] = [
             doi: "10.1016/j.vgie.2024.12.004",
             url: "https://doi.org/10.1016/j.vgie.2024.12.004",
             pdf: "/assets/products/robopera/components/dual-gripper-g/papers/2025_Kim_TraCloser_Colorectal_VideoGIE.pdf",
+            openAccess: true,
             clinical: {
               patients: "2 human cases (sigmoid LST; mid-rectum NET)",
               enBloc: "100% (2/2)",
@@ -644,6 +650,7 @@ export const PRODUCTS: Product[] = [
             doi: "10.1016/j.igie.2025.10.018",
             url: "https://doi.org/10.1016/j.igie.2025.10.018",
             pdf: "/assets/products/endocubot/papers/2025_Heinrich_iGIE_FaceValidity.pdf",
+            openAccess: true,
             clinical: {
               patients: "8 ESD trainees from European expert centers",
               procedureTime: "2-day structured training (≥ 2.5 h/day per trainee)",
@@ -739,6 +746,7 @@ export const PRODUCTS: Product[] = [
         doi: "10.5009/gnl230280",
         url: "https://doi.org/10.5009/gnl230280",
         pdf: "/assets/products/tracloser-retractable/papers/2024_Kim_Retractable_Colorectal_GutLiver.pdf",
+        openAccess: true,
         clinical: {
           patients: "36 ex vivo porcine ESDs (18 RESD vs 18 CESD) + 6 in vivo RESDs in 2 live pigs",
           enBloc: "100% (complete resection in all 36 ex vivo cases)",

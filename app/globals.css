@@ -2517,6 +2517,45 @@ button.component-brochure-diagram-box.is-zoomed-source {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* DOI + OA badge — small footer aligned to the bottom-right of the paper-row.
+   Sits below the authors line and right-aligns its contents so the badge and
+   DOI sit unobtrusively in the corner of each row. */
+.paper-row-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.paper-oa-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.paper-oa-badge.open {
+  background: rgba(22, 163, 74, 0.10);
+  border-color: rgba(22, 163, 74, 0.32);
+  color: #15803d;
+}
+.paper-oa-badge.closed {
+  background: rgba(107, 114, 128, 0.10);
+  border-color: rgba(107, 114, 128, 0.30);
+  color: #4b5563;
+}
+.paper-doi {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 18px;
+  color: var(--text-dim);
+  letter-spacing: 0.2px;
+}
 .paper-chevron {
   font-size: 22px;
   color: var(--text-dim);
