@@ -2472,6 +2472,7 @@ button.component-brochure-diagram-box.is-zoomed-source {
   box-shadow: 0 8px 22px rgba(2, 132, 199, 0.14);
 }
 .paper-row {
+  position: relative;
   display: flex; align-items: center; gap: 14px;
   width: 100%;
   padding: 16px 20px;
@@ -2517,16 +2518,21 @@ button.component-brochure-diagram-box.is-zoomed-source {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* DOI + OA badge — small footer aligned to the bottom-right of the paper-row.
-   Sits below the authors line and right-aligns its contents so the badge and
-   DOI sit unobtrusively in the corner of each row. */
+/* DOI + OA badge — overlay anchored to the bottom-right corner of the
+   paper-row so it doesn't grow the row height. The authors line above gets
+   a right-side reserved area (padding) so its ellipsis truncates before
+   reaching the badge area. */
 .paper-row-footer {
-  margin-top: 14px;
+  position: absolute;
+  right: 56px;
+  bottom: 14px;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: 14px;
-  flex-wrap: wrap;
+  pointer-events: none;
+}
+.paper-authors {
+  padding-right: 360px;
 }
 .paper-oa-badge {
   display: inline-flex;
