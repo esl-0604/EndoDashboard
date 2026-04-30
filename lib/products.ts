@@ -577,10 +577,11 @@ export const PRODUCTS: Product[] = [
     specs: [
       { k: "Dimensions", v: "660 W × 330 D × 360 H (mm)" },
       { k: "Weight", v: "19.8 kg" },
-      { k: "Power", v: "85–264 VAC · 47–63 Hz · Output 24 V 3.2 A 76.8 W" },
+      { k: "Rated Voltage", v: "100–240 VAC · 50/60 Hz" },
       { k: "Display", v: "8\" Touch Display" },
-      { k: "Operating Temperature", v: "10–30 °C" },
-      { k: "Certification", v: "KC (KR), FCC (US), CE (EU), RoHS (EU)" },
+      { k: "Operating Conditions", v: "15–30 °C · 30–70% RH (non-condensing)" },
+      { k: "Storage Conditions", v: "10–30 °C · 20–60% RH (non-condensing)" },
+      { k: "Certification", v: "KC / FCC / CE / RoHS / NRTL (CSA)" },
     ],
     clinical: { cases: "—", success: "—", time: "—", hospitals: "—" },
     summary: [
@@ -620,9 +621,10 @@ export const PRODUCTS: Product[] = [
         specs: [
           { k: "Dimensions [mm]", v: "660 W × 330 D × 360 H" },
           { k: "Weight [kg]", v: "19.8" },
-          { k: "Power supply", v: "Input 85–264 VAC, 47–63 Hz · 1.4 A / 114 VAC, 0.85 A / 230 VAC · Output 24 V 3.2 A 76.8 W" },
-          { k: "Operating Temperature [°C]", v: "10 – 30" },
+          { k: "Rated Voltage", v: "100–240 VAC · 50/60 Hz" },
           { k: "Display", v: "Touch display 8″" },
+          { k: "Operating Conditions", v: "15–30 °C · 30–70% RH (non-condensing)" },
+          { k: "Storage Conditions", v: "10–30 °C · 20–60% RH (non-condensing)" },
         ],
         papers: [
           {
