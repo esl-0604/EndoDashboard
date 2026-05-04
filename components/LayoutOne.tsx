@@ -315,6 +315,12 @@ export default function LayoutOne({
               onEnded={onHeroEnded}
               className="stage-video"
             />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/announcements/endorobotics-olympus-partnership.png"
+              alt="EndoRobotics × Olympus — Exclusive Global Distribution Partnership Announced"
+              className="stage-announcement"
+            />
             <div className="stage-overlay hero">
               <button
                 type="button"
