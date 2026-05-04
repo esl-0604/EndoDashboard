@@ -95,9 +95,11 @@ export default function LayoutOne({
   const product = PRODUCTS.find((p) => p.id === selectedId);
   const isDetail = selectedId !== null;
 
-  // Try to autoplay the hero video with sound. Browsers usually block this without
-  // a prior user gesture, so we fall back to muted autoplay and arm a one-shot
-  // listener that unmutes on the first user interaction (touch or click).
+  // Try to autoplay the hero video with sound. Browsers usually block unmuted
+  // autoplay without a prior user gesture, so we fall back to muted autoplay
+  // AND attach a one-shot global gesture listener that flips the video back
+  // to unmuted on the very first user interaction anywhere on the page —
+  // ensuring background audio resumes as soon as a visitor touches the kiosk.
   // Re-runs whenever the active hero video changes so the new clip starts cleanly.
   useEffect(() => {
     if (isDetail) return;
@@ -114,6 +116,35 @@ export default function LayoutOne({
         setVideoMuted(true);
       });
     }
+
+    // First-gesture unmute: if the browser blocked unmuted autoplay above,
+    // any user gesture lifts the restriction. We attach listeners for the
+    // common gesture types and remove all of them on first fire.
+    const gestureEvents: (keyof DocumentEventMap)[] = [
+      "pointerdown",
+      "touchstart",
+      "click",
+      "keydown",
+    ];
+    const unmute = () => {
+      const cur = heroVideoRef.current;
+      if (!cur) return;
+      if (!cur.muted) return;
+      cur.muted = false;
+      setVideoMuted(false);
+      if (cur.paused) cur.play().catch(() => {});
+      gestureEvents.forEach((ev) =>
+        document.removeEventListener(ev, unmute as EventListener)
+      );
+    };
+    gestureEvents.forEach((ev) =>
+      document.addEventListener(ev, unmute as EventListener, { passive: true })
+    );
+    return () => {
+      gestureEvents.forEach((ev) =>
+        document.removeEventListener(ev, unmute as EventListener)
+      );
+    };
   }, [isDetail, heroIdx]);
 
   useEffect(() => {
@@ -314,6 +345,13 @@ export default function LayoutOne({
               onTimeUpdate={onHeroTimeUpdate}
               onEnded={onHeroEnded}
               className="stage-video"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/announcements/endorobotics-olympus-partnership.png"
+              alt=""
+              aria-hidden="true"
+              className="stage-announcement-bg"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

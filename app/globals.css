@@ -182,22 +182,36 @@ button { font-family: inherit; color: inherit; cursor: pointer; border: none; ba
   background: #000;
 }
 /* Initial-screen announcement banner — overlays the hero video stage with a
-   square partnership graphic. object-fit: contain keeps the 1:1 banner
-   centered inside the 16:9 stage; pointer-events: none so the underlying
-   video controls (mute, scrubber) remain interactive. */
+   square partnership graphic. The hero video underneath is fully concealed:
+   a blurred copy of the same image (object-fit: cover) extends the dark
+   navy edges across the 16:9 stage, then the crisp banner sits centered on
+   top with object-fit: contain. pointer-events: none so the underlying
+   hero controls (mute, scrubber) remain interactive on top. */
+.showcase:not(.detail) .stage-announcement-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(60px) brightness(0.85) saturate(1.05);
+  transform: scale(1.15); /* hide blur edge fade */
+  z-index: 1;
+  pointer-events: none;
+}
 .showcase:not(.detail) .stage-announcement {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
   background: transparent;
 }
-/* Hide the announcement once a product is selected (detail mode) — only the
+/* Hide both layers once a product is selected (detail mode) — only the
    product video should be visible there. */
-.showcase.detail .stage-announcement {
+.showcase.detail .stage-announcement,
+.showcase.detail .stage-announcement-bg {
   display: none;
 }
 /* Initial-screen hero video should show fully (no crop) — letterboxing is
